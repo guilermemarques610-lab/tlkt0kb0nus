@@ -1,11 +1,11 @@
 {
-  "asset_id": "66270973-483a-4497-91c4-a3ef7b377e56",
-  "content_type": "image/png",
-  "created_at": "2026-07-20T00:04:59Z",
-  "original_filename": "tiktok-logo.png",
+  "version": 1,
+  "asset_id": "939f3c78-8f9f-4d72-92ad-4b1aa45b3915",
   "project_id": "7265da24-6ad1-4887-9920-0c7451750a9a",
-  "r2_key": "a/v1/7265da24-6ad1-4887-9920-0c7451750a9a/66270973-483a-4497-91c4-a3ef7b377e56/tiktok-logo.png",
-  "size": 64774,
-  "url": "/__l5e/assets-v1/66270973-483a-4497-91c4-a3ef7b377e56/tiktok-logo.png",
-  "version": 1
+  "url": "/__l5e/assets-v1/939f3c78-8f9f-4d72-92ad-4b1aa45b3915/tiktok-logo.png",
+  "r2_key": "a/v1/7265da24-6ad1-4887-9920-0c7451750a9a/939f3c78-8f9f-4d72-92ad-4b1aa45b3915/tiktok-logo.png",
+  "original_filename": "tiktok-logo.png",
+  "size": 24122,
+  "content_type": "image/png",
+  "created_at": "2026-07-28T02:52:16Z"
 }
