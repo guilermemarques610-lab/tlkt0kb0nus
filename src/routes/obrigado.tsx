@@ -33,6 +33,128 @@ export const Route = createFileRoute("/obrigado")({
 });
 
 function Obrigado() {
+  const [open, setOpen] = useState(false);
+  const [config, setConfig] = useState<CheckoutConfig | null>(null);
+  const [email, setEmail] = useState("");
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [payError, setPayError] = useState<string | null>(null);
+  const [paying, setPaying] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  const stripeRef = useRef<any>(null);
+  const elementsRef = useRef<any>(null);
+  const emailRef = useRef("");
+  emailRef.current = email;
+
+  useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await fetch(
+          `${THREEB_BASE_URL}/get-checkout-config?apiKey=${encodeURIComponent(
+            THREEB_API_KEY,
+          )}&productId=${encodeURIComponent(RETRY_PRODUCT_ID)}`,
+        );
+        if (!res.ok) throw new Error(await res.text());
+        const data: CheckoutConfig = await res.json();
+        if (cancelled) return;
+        setConfig(data);
+
+        const Stripe = await loadStripeJs();
+        if (cancelled) return;
+        const stripe = Stripe(data.publishableKey);
+        stripeRef.current = stripe;
+
+        const elements = stripe.elements({
+          mode: "payment",
+          amount: data.product.priceCents,
+          currency: data.product.currency.toLowerCase(),
+          locale: "es",
+          appearance: {
+            theme: "stripe",
+            variables: {
+              colorPrimary: "#f43f5e",
+              borderRadius: "12px",
+              fontFamily: "system-ui, sans-serif",
+            },
+          },
+        });
+        elementsRef.current = elements;
+
+        const expr = elements.create("expressCheckout");
+        expr.mount("#retry-express");
+        expr.on("confirm", () => void pay());
+
+        const payment = elements.create("payment", {
+          terms: { card: "never" },
+          fields: { billingDetails: { email: "never" } },
+        });
+        payment.mount("#retry-payment");
+        payment.on("ready", () => setReady(true));
+      } catch (e: any) {
+        if (!cancelled) setLoadError(e?.message || "No se pudo cargar el pago.");
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  async function pay() {
+    const stripe = stripeRef.current;
+    const elements = elementsRef.current;
+    if (!stripe || !elements || !config) return;
+
+    setPayError(null);
+    setPaying(true);
+    try {
+      const buyerEmail = emailRef.current.trim();
+      if (!buyerEmail) {
+        setPayError("Introduce tu correo electrónico.");
+        setPaying(false);
+        return;
+      }
+
+      const { error: submitError } = await elements.submit();
+      if (submitError) {
+        setPayError(submitError.message || "Revisa los datos de la tarjeta.");
+        setPaying(false);
+        return;
+      }
+
+      const res = await fetch(`${THREEB_BASE_URL}/create-payment-intent`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          apiKey: THREEB_API_KEY,
+          productId: config.product.id,
+          quantity: 1,
+          buyerEmail,
+        }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const { clientSecret, paymentIntentId } = await res.json();
+
+      const { error } = await stripe.confirmPayment({
+        elements,
+        clientSecret,
+        confirmParams: {
+          return_url: `${window.location.origin}/obrigado?payment_intent=${paymentIntentId}`,
+          payment_method_data: { billing_details: { email: buyerEmail } },
+        },
+      });
+      if (error) setPayError(error.message || "No se pudo procesar el pago.");
+    } catch (e: any) {
+      setPayError(e?.message || "No se pudo procesar el pago.");
+    } finally {
+      setPaying(false);
+    }
+  }
+
   return (
     <main className="min-h-screen w-full bg-neutral-500 px-4 py-10 flex items-center justify-center">
       <section className="w-full max-w-md rounded-2xl bg-white px-7 py-8 shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
