@@ -222,13 +222,77 @@ function Obrigado() {
           </p>
         </div>
 
-        <a
-          href="/checkout"
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-rose-500 to-rose-600 py-4 text-[17px] font-black text-white shadow-lg transition-all hover:from-rose-600 hover:to-rose-700 active:scale-[0.99]"
-        >
-          Intentar de nuevo
-          <span aria-hidden="true">→</span>
-        </a>
+        {!open ? (
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-rose-500 to-rose-600 py-4 text-[17px] font-black text-white shadow-lg transition-all hover:from-rose-600 hover:to-rose-700 active:scale-[0.99]"
+          >
+            Intentar de nuevo
+            <span aria-hidden="true">→</span>
+          </button>
+        ) : (
+          <div>
+            <button
+              type="button"
+              onClick={() => void pay()}
+              disabled={!ready || paying}
+              className="mb-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-rose-500 to-rose-600 py-4 text-[17px] font-black text-white shadow-lg transition-all hover:from-rose-600 hover:to-rose-700 active:scale-[0.99] disabled:opacity-60"
+            >
+              {paying
+                ? "Procesando…"
+                : `Pagar ahora${
+                    config
+                      ? ` ${formatPrice(config.product.priceCents, config.product.currency)}`
+                      : ""
+                  }`}
+              <svg
+                viewBox="0 0 24 24"
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                aria-hidden="true"
+              >
+                <rect x="4" y="10" width="16" height="10" rx="2" />
+                <path d="M8 10V7a4 4 0 118 0v3" />
+              </svg>
+            </button>
+
+            {loadError && (
+              <p className="mb-3 text-sm font-medium text-rose-600" role="alert">
+                {loadError}
+              </p>
+            )}
+
+            <label
+              className="mb-1 block text-sm font-semibold text-neutral-700"
+              htmlFor="retry-email"
+            >
+              Correo electrónico
+            </label>
+            <input
+              id="retry-email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="tu@email.com"
+              className="mb-4 w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-200"
+            />
+
+            <div id="retry-express" className="mb-4" />
+            <div id="retry-payment" className="mb-3 min-h-[140px]" />
+
+            {payError && (
+              <p className="mb-2 text-sm font-medium text-rose-600" role="alert">
+                {payError}
+              </p>
+            )}
+          </div>
+        )}
 
         <div className="mt-6 border-t border-dashed border-neutral-200 pt-4">
           <p className="flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-neutral-400">
