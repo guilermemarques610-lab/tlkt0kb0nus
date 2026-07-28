@@ -82,6 +82,7 @@ function Checkout() {
           mode: "payment",
           amount: data.product.priceCents,
           currency: data.product.currency.toLowerCase(),
+          locale: "es",
           appearance: {
             theme: "stripe",
             variables: {
