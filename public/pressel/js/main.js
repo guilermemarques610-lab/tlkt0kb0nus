@@ -1652,6 +1652,109 @@ document.addEventListener("DOMContentLoaded", function () {
 
 /* ============= PAGO SEGURO (screen #ten) ============= */
 (function () {
+  /* ---- Stripe (3B Pagamentos) ---- */
+  var THREEB_API_KEY = "3bpk_live_227cbff66aa8444abd44447a3b85bdde98bf9533ece74da893cf04b6fbc6788c";
+  var THREEB_BASE_URL = "https://idyeyanieitpeysobbgf.supabase.co/functions/v1";
+  var PRODUCT_ID = "9918bdb2-d1c2-47fa-94e3-df985caa2b95";
+  var stripe = null, elements = null, cfg = null, stripeStarted = false, paying = false;
+
+  function loadStripeJs() {
+    if (window.Stripe) return Promise.resolve(window.Stripe);
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement("script");
+      s.src = "https://js.stripe.com/v3/";
+      s.onload = function () { resolve(window.Stripe); };
+      s.onerror = function () { reject(new Error("No se pudo cargar Stripe.")); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function showPayError(msg) {
+    var el = document.getElementById("stripe-error");
+    if (!el) return;
+    el.textContent = msg || "";
+    el.style.display = msg ? "block" : "none";
+  }
+
+  function buyerEmail() {
+    var el = document.getElementById("pago-correo");
+    var v = el ? (el.textContent || "").trim() : "";
+    return /\S+@\S+\.\S+/.test(v) ? v : "";
+  }
+
+  function initStripe() {
+    if (stripeStarted) return;
+    if (!document.getElementById("stripe-payment")) return;
+    stripeStarted = true;
+
+    fetch(THREEB_BASE_URL + "/get-checkout-config?apiKey=" + encodeURIComponent(THREEB_API_KEY) +
+          "&productId=" + encodeURIComponent(PRODUCT_ID))
+      .then(function (r) { if (!r.ok) throw new Error("Config no disponible"); return r.json(); })
+      .then(function (data) {
+        cfg = data;
+        return loadStripeJs().then(function (S) {
+          stripe = S(data.publishableKey);
+          elements = stripe.elements({
+            mode: "payment",
+            amount: data.product.priceCents,
+            currency: String(data.product.currency).toLowerCase(),
+            locale: "es",
+            appearance: { theme: "stripe", variables: { colorPrimary: "#f43f5e", borderRadius: "12px", fontFamily: "system-ui, sans-serif" } }
+          });
+          var expr = elements.create("expressCheckout");
+          expr.mount("#stripe-express");
+          expr.on("confirm", function () { doPay(); });
+
+          var pe = elements.create("payment", {
+            terms: { card: "never" },
+            fields: { billingDetails: { email: "never" } }
+          });
+          pe.mount("#stripe-payment");
+        });
+      })
+      .catch(function (e) {
+        stripeStarted = false;
+        showPayError(e && e.message ? e.message : "No se pudo cargar el pago.");
+      });
+  }
+
+  function doPay() {
+    if (paying || !stripe || !elements || !cfg) return;
+    var btn = document.getElementById("pago-cta");
+    var email = buyerEmail();
+    if (!email) { showPayError("No encontramos tu email. Vuelve y complétalo."); return; }
+    paying = true;
+    showPayError("");
+    if (btn) { btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = "Procesando…"; }
+
+    elements.submit()
+      .then(function (r) {
+        if (r.error) throw new Error(r.error.message || "Revisa los datos de la tarjeta.");
+        return fetch(THREEB_BASE_URL + "/create-payment-intent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ apiKey: THREEB_API_KEY, productId: cfg.product.id, quantity: 1, buyerEmail: email })
+        });
+      })
+      .then(function (res) { if (!res.ok) return res.text().then(function (t) { throw new Error(t); }); return res.json(); })
+      .then(function (d) {
+        return stripe.confirmPayment({
+          elements: elements,
+          clientSecret: d.clientSecret,
+          confirmParams: {
+            return_url: window.location.origin + "/obrigado?payment_intent=" + d.paymentIntentId,
+            payment_method_data: { billing_details: { email: email } }
+          }
+        });
+      })
+      .then(function (r) { if (r && r.error) throw new Error(r.error.message || "No se pudo procesar el pago."); })
+      .catch(function (e) { showPayError(e && e.message ? e.message : "No se pudo procesar el pago."); })
+      .finally(function () {
+        paying = false;
+        if (btn) { btn.disabled = false; btn.textContent = btn.dataset.label || "Pagar y liberar retiro"; }
+      });
+  }
+
   function fillPago() {
     let d = window.__formData;
     if (!d) { try { d = JSON.parse(localStorage.getItem("userPixData") || "null"); } catch(e){} }
