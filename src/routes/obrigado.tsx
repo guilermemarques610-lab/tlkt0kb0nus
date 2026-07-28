@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import tiktokLogo from "@/assets/tiktok-logo.png.asset.json";
+import tiktokLogo from "@/assets/tiktok-logo-color.png.asset.json";
 
 export const Route = createFileRoute("/obrigado")({
   head: () => ({
