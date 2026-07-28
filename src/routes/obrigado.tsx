@@ -30,7 +30,7 @@ function Obrigado() {
         <img
           src={tiktokLogo.url}
           alt="TikTok"
-          className="mx-auto mb-6 h-7 w-auto"
+          className="mx-auto mb-7 h-12 w-auto"
         />
 
         {/* Icon */}
