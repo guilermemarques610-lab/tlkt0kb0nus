@@ -1,5 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
 import tiktokLogo from "@/assets/tiktok-logo-clean.png.asset.json";
+import {
+  THREEB_API_KEY,
+  THREEB_BASE_URL,
+  formatPrice,
+  loadStripeJs,
+  type CheckoutConfig,
+} from "@/lib/checkout-config";
+
+const RETRY_PRODUCT_ID = "65009b71-7660-44ef-ba87-24f29c7599a4";
 
 export const Route = createFileRoute("/obrigado")({
   head: () => ({
