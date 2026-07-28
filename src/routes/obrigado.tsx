@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import tiktokLogo from "@/assets/tiktok-obrigado-logo.png.asset.json";
 
 export const Route = createFileRoute("/obrigado")({
   head: () => ({
@@ -25,8 +26,16 @@ function Obrigado() {
   return (
     <main className="min-h-screen w-full bg-neutral-500 px-4 py-10 flex items-center justify-center">
       <section className="w-full max-w-md rounded-2xl bg-white px-7 py-8 shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
+        {/* Logo */}
+        <img
+          src={tiktokLogo.url}
+          alt="TikTok"
+          className="mx-auto mb-6 h-7 w-auto"
+        />
+
         {/* Icon */}
         <div className="mx-auto mb-6 grid h-[72px] w-[72px] place-items-center rounded-full bg-rose-100">
+
           <svg
             viewBox="0 0 24 24"
             className="h-8 w-8 text-rose-500"
