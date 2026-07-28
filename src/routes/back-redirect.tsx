@@ -20,7 +20,7 @@ export const Route = createFileRoute("/back-redirect")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: BackRedirect;
+  component: BackRedirect,
 });
 
 const STEPS = [
