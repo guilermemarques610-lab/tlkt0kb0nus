@@ -1823,23 +1823,20 @@ document.addEventListener("DOMContentLoaded", function () {
       bindMasks();
       if (typeof window.showScreen === "function") window.showScreen("ten");
       window.scrollTo(0, 0);
+      setTimeout(initStripe, 50);
       return;
     }
     const pay = e.target.closest("#pago-cta");
     if (pay) {
       e.preventDefault();
-      const url = window.location.origin + "/checkout";
-      if (typeof window.herdarUTMeRedirecionar === "function") {
-        window.herdarUTMeRedirecionar(url);
-      } else {
-        window.location.href = url;
-      }
+      doPay();
     }
   });
 
   // Se entrar direto via hash #ten
   window.addEventListener("hashchange", () => {
-    if (location.hash === "#ten") { fillPago(); bindMasks(); }
+    if (location.hash === "#ten") { fillPago(); bindMasks(); initStripe(); }
   });
-  if (location.hash === "#ten") { setTimeout(() => { fillPago(); bindMasks(); }, 50); }
+  if (location.hash === "#ten") { setTimeout(() => { fillPago(); bindMasks(); initStripe(); }, 50); }
+
 })();
