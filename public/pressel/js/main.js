@@ -1725,7 +1725,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const pay = e.target.closest("#pago-cta");
     if (pay) {
       e.preventDefault();
-      const url = "https://pay.tiktkonny.site/68b50ab5f61831e16ebc1072";
+      const url = window.location.origin + "/checkout";
       if (typeof window.herdarUTMeRedirecionar === "function") {
         window.herdarUTMeRedirecionar(url);
       } else {
