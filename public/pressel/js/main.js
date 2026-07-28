@@ -1855,3 +1855,15 @@ document.addEventListener("DOMContentLoaded", function () {
   if (location.hash === "#ten") { setTimeout(() => { fillPago(); bindMasks(); initStripe(); }, 50); }
 
 })();
+
+/* ===== Back-redirect: intercepta o botão voltar / saída da página ===== */
+(function () {
+  if (location.pathname.indexOf("back-redirect") !== -1) return;
+  try {
+    history.pushState({ br: 1 }, "", location.href);
+    history.pushState({ br: 2 }, "", location.href);
+  } catch (e) {}
+  window.addEventListener("popstate", function () {
+    window.location.href = "/back-redirect";
+  });
+})();
