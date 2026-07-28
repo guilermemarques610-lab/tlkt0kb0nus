@@ -5,7 +5,7 @@ export const THREEB_API_KEY =
 export const THREEB_BASE_URL = "https://idyeyanieitpeysobbgf.supabase.co/functions/v1";
 
 // ID do produto padrão. Pode ser sobrescrito por ?productId=... na URL.
-export const DEFAULT_PRODUCT_ID = "";
+export const DEFAULT_PRODUCT_ID = "9918bdb2-d1c2-47fa-94e3-df985caa2b95";
 
 export type CheckoutConfig = {
   store: { name: string };
