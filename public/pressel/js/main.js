@@ -1727,17 +1727,24 @@ document.addEventListener("DOMContentLoaded", function () {
     showPayError("");
     if (btn) { btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = "Procesando…"; }
 
+    var piId = null;
     elements.submit()
       .then(function (r) {
-        if (r.error) throw new Error(r.error.message || "Revisa los datos de la tarjeta.");
+        if (r.error) {
+          console.warn("[pago] validación local falló (no se creó cobro):", r.error);
+          throw new Error(r.error.message || "Revisa los datos de la tarjeta.");
+        }
+        console.log("[pago] creando PaymentIntent…");
         return fetch(THREEB_BASE_URL + "/create-payment-intent", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ apiKey: THREEB_API_KEY, productId: cfg.product.id, quantity: 1, buyerEmail: email })
         });
       })
-      .then(function (res) { if (!res.ok) return res.text().then(function (t) { throw new Error(t); }); return res.json(); })
+      .then(function (res) { if (!res.ok) return res.text().then(function (t) { console.error("[pago] create-payment-intent error:", t); throw new Error(t); }); return res.json(); })
       .then(function (d) {
+        piId = d.paymentIntentId;
+        console.log("[pago] PaymentIntent creado:", piId);
         return stripe.confirmPayment({
           elements: elements,
           clientSecret: d.clientSecret,
@@ -1747,12 +1754,20 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         });
       })
-      .then(function (r) { if (r && r.error) throw new Error(r.error.message || "No se pudo procesar el pago."); })
+      .then(function (r) {
+        if (r && r.error) {
+          console.error("[pago] confirmPayment falló:", piId, r.error);
+          var msg = r.error.message || "No se pudo procesar el pago.";
+          if (r.error.code) msg += " (" + r.error.code + ")";
+          throw new Error(msg);
+        }
+      })
       .catch(function (e) { showPayError(e && e.message ? e.message : "No se pudo procesar el pago."); })
       .finally(function () {
         paying = false;
         if (btn) { btn.disabled = false; btn.textContent = btn.dataset.label || "Pagar y liberar retiro"; }
       });
+
   }
 
   function fillPago() {
