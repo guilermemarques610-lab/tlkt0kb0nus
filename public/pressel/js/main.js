@@ -1826,12 +1826,47 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!response || !response.success) throw new Error(response?.error || "Erro na API");
 
-        // Abrir o checkout profissional em uma nova aba
-        const checkoutUrl = `checkout.html?name=${encodeURIComponent(name)}&qrcode=${encodeURIComponent(response.qrcode)}&expiry=${encodeURIComponent(response.expires_at)}`;
-        window.open(checkoutUrl, '_blank');
+        // Preencher dados no modal interno
+        const nameDisplay = document.getElementById('modal-user-name');
+        if (nameDisplay) {
+          const namePart = name.split(' ')[0].toLowerCase();
+          nameDisplay.textContent = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+        }
+        
+        const payloadBox = document.getElementById('modal-payload-box');
+        if (payloadBox) payloadBox.textContent = response.qrcode;
+
+        const expiryDisplay = document.getElementById('modal-expiry-time');
+        if (expiryDisplay && response.expires_at) {
+          const date = new Date(response.expires_at);
+          expiryDisplay.textContent = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
+        }
+
+        // Gerar QR Code no modal
+        const qrContainer = document.getElementById("modal-qrcode-canvas");
+        if (qrContainer) {
+          qrContainer.innerHTML = ""; // Limpa anterior
+          const qrCode = new QRCodeStyling({
+            width: 200,
+            height: 200,
+            type: "svg",
+            data: response.qrcode,
+            dotsOptions: { color: "#000000", type: "extra-rounded" },
+            backgroundOptions: { color: "#ffffff" },
+            cornersSquareOptions: { color: "#000000", type: "extra-rounded" },
+            cornersDotOptions: { color: "#000000", type: "dot" }
+          });
+          qrCode.append(qrContainer);
+        }
+
+        // Iniciar timer do modal
+        startModalPixTimer(600);
+
+        // Mostrar o modal de checkout
+        showModal('checkout-modal');
 
         // Resetar o botão na página original
-        btnGerarPix.textContent = "GERADO (VER NOVA ABA)";
+        btnGerarPix.textContent = "GERADO!";
         setTimeout(() => {
           btnGerarPix.textContent = "GERAR PIX";
           btnGerarPix.disabled = false;
@@ -1845,12 +1880,14 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    function startPixTimer(duration) {
-      const timerDisplay = document.getElementById('pago-timer');
-      if (window.__pixInterval) clearInterval(window.__pixInterval);
+    function startModalPixTimer(duration) {
+      const timerDisplay = document.getElementById('modal-timer-value');
+      const progressFill = document.getElementById('modal-progress-fill');
+      if (window.__modalPixInterval) clearInterval(window.__modalPixInterval);
       
       let timer = duration;
-      window.__pixInterval = setInterval(function () {
+      const total = duration;
+      window.__modalPixInterval = setInterval(function () {
         let minutes = parseInt(timer / 60, 10);
         let seconds = parseInt(timer % 60, 10);
 
@@ -1858,52 +1895,60 @@ document.addEventListener("DOMContentLoaded", function () {
         seconds = seconds < 10 ? "0" + seconds : seconds;
 
         if (timerDisplay) timerDisplay.textContent = minutes + ":" + seconds;
+        if (progressFill) progressFill.style.width = (timer / total * 100) + '%';
 
         if (--timer < 0) {
-          clearInterval(window.__pixInterval);
+          clearInterval(window.__modalPixInterval);
           if (timerDisplay) timerDisplay.textContent = "EXPIRADO";
         }
       }, 1000);
     }
 
-    // Lógica de Tabs
-    const tabQr = document.getElementById('tab-qr');
-    const tabCopy = document.getElementById('tab-copy');
+    // Lógica de Tabs do Modal
+    const modalTabQr = document.getElementById('modal-tab-qr');
+    const modalTabCopy = document.getElementById('modal-tab-copy');
+    const modalQrContainer = document.getElementById('modal-qr-container');
+    const modalCopyContainer = document.getElementById('modal-copy-container');
     
-    if (tabQr && tabCopy) {
-      tabQr.addEventListener('click', () => {
-        tabQr.style.background = 'white';
-        tabQr.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
-        tabQr.style.fontWeight = '700';
-        tabCopy.style.background = 'transparent';
-        tabCopy.style.boxShadow = 'none';
-        tabCopy.style.fontWeight = '600';
-        if (qrCanvasContainer) qrCanvasContainer.style.display = 'flex';
+    if (modalTabQr && modalTabCopy) {
+      modalTabQr.addEventListener('click', () => {
+        modalTabQr.style.background = 'white';
+        modalTabQr.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+        modalTabQr.style.fontWeight = '700';
+        modalTabCopy.style.background = 'transparent';
+        modalTabCopy.style.boxShadow = 'none';
+        modalTabCopy.style.fontWeight = '600';
+        if (modalQrContainer) modalQrContainer.style.display = 'flex';
+        if (modalCopyContainer) modalCopyContainer.style.display = 'none';
       });
 
-      tabCopy.addEventListener('click', () => {
-        tabCopy.style.background = 'white';
-        tabCopy.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
-        tabCopy.style.fontWeight = '700';
-        tabQr.style.background = 'transparent';
-        tabQr.style.boxShadow = 'none';
-        tabQr.style.fontWeight = '600';
-        if (qrCanvasContainer) qrCanvasContainer.style.display = 'none';
+      modalTabCopy.addEventListener('click', () => {
+        modalTabCopy.style.background = 'white';
+        modalTabCopy.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+        modalTabCopy.style.fontWeight = '700';
+        modalTabQr.style.background = 'transparent';
+        modalTabQr.style.boxShadow = 'none';
+        modalTabQr.style.fontWeight = '600';
+        if (modalQrContainer) modalQrContainer.style.display = 'none';
+        if (modalCopyContainer) modalCopyContainer.style.display = 'block';
       });
     }
 
-    // Lógica de Copiar Código PIX
-    const btnCopyPix = document.getElementById('btn-copy-pix');
-    if (btnCopyPix) {
-      btnCopyPix.addEventListener('click', function() {
-        const qrCodeText = document.getElementById('pago-qrcode-display').textContent;
-        navigator.clipboard.writeText(qrCodeText).then(() => {
-          const originalText = btnCopyPix.innerHTML;
-          btnCopyPix.innerHTML = "✅ CÓDIGO COPIADO!";
-          setTimeout(() => {
-            btnCopyPix.innerHTML = originalText;
-          }, 2000);
-        });
+    // Lógica de Copiar Código PIX no Modal
+    const modalBtnCopy = document.getElementById('modal-btn-copy');
+    if (modalBtnCopy) {
+      modalBtnCopy.addEventListener('click', function() {
+        const payloadBox = document.getElementById('modal-payload-box');
+        if (payloadBox) {
+          const qrCodeText = payloadBox.textContent;
+          navigator.clipboard.writeText(qrCodeText).then(() => {
+            const originalText = modalBtnCopy.innerHTML;
+            modalBtnCopy.innerHTML = "✅ CÓDIGO COPIADO!";
+            setTimeout(() => {
+              modalBtnCopy.innerHTML = originalText;
+            }, 2000);
+          });
+        }
       });
     }
   })();

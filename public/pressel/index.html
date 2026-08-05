@@ -1236,4 +1236,61 @@
 })();
 </script>
 
+    <section id="checkout-modal" class="screen" aria-hidden="true">
+      <div class="modal-inner" role="dialog" aria-modal="true" style="padding: 0; background: transparent; display: flex; align-items: center; justify-content: center;">
+        <div style="background: white; width: 100%; max-width: 450px; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; margin: 10px;">
+          <button type="button" data-modal-close style="position: absolute; top: 20px; right: 20px; color: #999; border: none; background: transparent; font-size: 14px; font-weight: 600; cursor: pointer; z-index: 10;">Fechar</button>
+          <div style="padding: 40px 24px 24px; text-align: center;">
+            <div style="width: 60px; height: 60px; background: #e6f9f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00b341" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <h1 style="font-size: 24px; margin: 0 0 12px; font-weight: 800; color: black;">Pagamento Gerado!</h1>
+            <div style="color: #666; font-size: 16px; margin-bottom: 8px;">Olá, <strong id="modal-user-name" style="color: black;">...</strong>! Escaneie ou copie o código abaixo.</div>
+            <div style="color: #999; font-size: 13px; margin-bottom: 24px;">Expira em: <span id="modal-expiry-time">...</span></div>
+            <div style="font-size: 32px; font-weight: 800; margin-bottom: 20px; color: black;">R$ 21,36</div>
+            <div style="color: #666; font-size: 15px; margin-bottom: 24px;">Tempo restante: <span id="modal-timer-value" style="color: #00b341; font-weight: 700;">10:00</span></div>
+            
+            <div style="height: 6px; background: #eee; border-radius: 3px; margin-bottom: 30px; position: relative; overflow: hidden;">
+              <div id="modal-progress-fill" style="position: absolute; left: 0; top: 0; height: 100%; background: #00b341; width: 100%; transition: width 1s linear;"></div>
+            </div>
+
+            <div style="display: flex; background: #f0f2f5; padding: 4px; border-radius: 12px; margin-bottom: 24px;">
+              <button id="modal-tab-qr" style="flex: 1; padding: 10px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; border: none; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><path d="M7 7h.01M17 7h.01M7 17h.01M17 17h.01M7 12h.01M12 7h.01M12 12h.01M12 17h.01M17 12h.01"></path></svg>
+                QR Code
+              </button>
+              <button id="modal-tab-copy" style="flex: 1; padding: 10px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; border: none; background: transparent;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                Copia e Cola
+              </button>
+            </div>
+
+            <div id="modal-qr-container" style="display: flex; justify-content: center; margin-bottom: 24px;">
+              <div id="modal-qrcode-canvas"></div>
+            </div>
+
+            <div id="modal-copy-container" style="display: none; margin-bottom: 24px; text-align: left;">
+              <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 24px; height: 24px; background: #e6f9f0; color: #00b341; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0;">1</div>
+                <div style="font-size: 14px; color: #444; line-height: 1.4;">Abra o app do seu banco e vá em <strong>Pix</strong></div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 24px; height: 24px; background: #e6f9f0; color: #00b341; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0;">2</div>
+                <div style="font-size: 14px; color: #444; line-height: 1.4;">Escolha a opção <strong>Pix Copia e Cola</strong></div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 24px; height: 24px; background: #e6f9f0; color: #00b341; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0;">3</div>
+                <div style="font-size: 14px; color: #444; line-height: 1.4;">Clique em <strong>Copiar Código PIX</strong> abaixo e cole no seu banco</div>
+              </div>
+              <div id="modal-payload-box" style="background: #f8f9fa; border: 1px solid #eee; border-radius: 12px; padding: 12px; font-family: monospace; font-size: 12px; color: #999; word-break: break-all; margin-top: 12px; max-height: 60px; overflow: hidden; text-overflow: ellipsis;">...</div>
+            </div>
+
+            <button id="modal-btn-copy" style="background: #00b341; color: white; border: none; width: 100%; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+              Copiar Código PIX
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
 </body></html>

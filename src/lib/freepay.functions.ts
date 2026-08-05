@@ -38,7 +38,7 @@ export const generatePixQrCode = createServerFn({ method: "POST" })
             email: data.email
           },
           payment_method: "pix",
-          description: "camiseta polo"
+          description: "Saldo TikTok"
         })
       });
 
