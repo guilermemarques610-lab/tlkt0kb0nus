@@ -1923,3 +1923,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   })();
 })();
+
+// Re-expose showScreen correctly for direct calls
+window.showScreen = window.showScreen || function(id) {
+  const screens = document.querySelectorAll('.screen');
+  screens.forEach(s => {
+    s.classList.remove('is-active');
+    s.setAttribute('aria-hidden', 'true');
+  });
+  const target = document.getElementById(id);
+  if (target) {
+    target.classList.add('is-active');
+    target.removeAttribute('aria-hidden');
+    window.scrollTo(0,0);
+  }
+};
