@@ -1102,10 +1102,12 @@ button:focus {
 }
 .pix-item {
   display: flex;
-  gap: 8px;
-  align-items: flex-start;
+  gap: 12px;
+  align-items: center;
+
   background-color: #fefefe;
-  height: 42px;
+  height: 56px;
+
   padding: 16px;
   cursor: pointer;
   transition: background-color 0.15s ease;
