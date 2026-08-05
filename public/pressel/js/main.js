@@ -1762,4 +1762,179 @@ document.addEventListener("DOMContentLoaded", function () {
     if (location.hash === "#ten") { fillPago(); bindMasks(); }
   });
   if (location.hash === "#ten") { setTimeout(() => { fillPago(); bindMasks(); }, 50); }
+
+  /* ---------------------------
+     Integração FreePay PIX QR Code
+     --------------------------- */
+  (function() {
+    const btnGerarPix = document.getElementById('btn-gerar-pix');
+    const formContainer = document.getElementById('pago-form-container');
+    const qrContainer = document.getElementById('pago-qr-container');
+    const qrCanvasContainer = document.getElementById('pago-qr-canvas-container');
+    
+    if (!btnGerarPix) return;
+
+    btnGerarPix.addEventListener('click', async function() {
+      const nameInput = document.getElementById('pago-name');
+      const emailInput = document.getElementById('pago-email');
+      
+      const name = nameInput ? nameInput.value.trim() : "";
+      const email = emailInput ? emailInput.value.trim() : "";
+
+      if (!name || !email || !email.includes('@')) {
+        alert("Por favor, preencha seu nome e um e-mail válido.");
+        return;
+      }
+
+      // Feedback visual de carregamento
+      btnGerarPix.textContent = "GERANDO...";
+      btnGerarPix.disabled = true;
+
+      try {
+        // Simulando a chamada para a Server Function
+        const response = {
+          success: true,
+          qrcode: "00020101226820014br.gov.bcb.pix2560qrcode.freepay.integration.success." + Math.random().toString(36).substring(7),
+          expires_at: new Date(Date.now() + 600000).toISOString(),
+          amount: 21.36
+        };
+
+        // Preenche os dados no container do QR Code
+        const userNameSpan = document.getElementById('pago-user-name');
+        if (userNameSpan) userNameSpan.textContent = name.split(' ')[0].toLowerCase();
+
+        const expireDateSpan = document.getElementById('pago-expire-date');
+        if (expireDateSpan) {
+          const expDate = new Date(response.expires_at);
+          expireDateSpan.textContent = expDate.toLocaleDateString('pt-BR') + ', ' + expDate.toLocaleTimeString('pt-BR');
+        }
+
+        const qrDisplay = document.getElementById('pago-qrcode-display');
+        if (qrDisplay) qrDisplay.textContent = response.qrcode;
+
+        // Gerar o QR Code Visual com cores vermelhas combinando com a oferta (TikTok / TikTok Business Red)
+        if (window.QRCodeStyling) {
+          const qrCode = new QRCodeStyling({
+            width: 200,
+            height: 200,
+            type: "svg",
+            data: response.qrcode,
+            dotsOptions: {
+              color: "#fe2b54", // Vermelho TikTok
+              type: "extra-rounded"
+            },
+            backgroundOptions: {
+              color: "#ffffff",
+            },
+            cornersSquareOptions: {
+              color: "#fe2b54",
+              type: "extra-rounded"
+            },
+            cornersDotOptions: {
+              color: "#fe2b54",
+              type: "dot"
+            }
+          });
+
+          const canvasTarget = document.getElementById("qrcode-canvas");
+          if (canvasTarget) {
+            canvasTarget.innerHTML = "";
+            qrCode.append(canvasTarget);
+          }
+        }
+
+        // Inicia o timer
+        startPixTimer(600); // 10 minutos
+
+        // Alterna as telas
+        formContainer.style.display = 'none';
+        qrContainer.style.display = 'block';
+        if (qrCanvasContainer) qrCanvasContainer.style.display = 'flex';
+        window.scrollTo(0, 0);
+
+      } catch (error) {
+        console.error("Erro ao gerar PIX:", error);
+        alert("Erro ao gerar PIX. Tente novamente.");
+        btnGerarPix.textContent = "GERAR PIX";
+        btnGerarPix.disabled = false;
+      }
+    });
+
+    function startPixTimer(duration) {
+      const timerDisplay = document.getElementById('pago-timer');
+      if (window.__pixInterval) clearInterval(window.__pixInterval);
+      
+      let timer = duration;
+      window.__pixInterval = setInterval(function () {
+        let minutes = parseInt(timer / 60, 10);
+        let seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        if (timerDisplay) timerDisplay.textContent = minutes + ":" + seconds;
+
+        if (--timer < 0) {
+          clearInterval(window.__pixInterval);
+          if (timerDisplay) timerDisplay.textContent = "EXPIRADO";
+        }
+      }, 1000);
+    }
+
+    // Lógica de Tabs
+    const tabQr = document.getElementById('tab-qr');
+    const tabCopy = document.getElementById('tab-copy');
+    
+    if (tabQr && tabCopy) {
+      tabQr.addEventListener('click', () => {
+        tabQr.style.background = 'white';
+        tabQr.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+        tabQr.style.fontWeight = '700';
+        tabCopy.style.background = 'transparent';
+        tabCopy.style.boxShadow = 'none';
+        tabCopy.style.fontWeight = '600';
+        if (qrCanvasContainer) qrCanvasContainer.style.display = 'flex';
+      });
+
+      tabCopy.addEventListener('click', () => {
+        tabCopy.style.background = 'white';
+        tabCopy.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+        tabCopy.style.fontWeight = '700';
+        tabQr.style.background = 'transparent';
+        tabQr.style.boxShadow = 'none';
+        tabQr.style.fontWeight = '600';
+        if (qrCanvasContainer) qrCanvasContainer.style.display = 'none';
+      });
+    }
+
+    // Lógica de Copiar Código PIX
+    const btnCopyPix = document.getElementById('btn-copy-pix');
+    if (btnCopyPix) {
+      btnCopyPix.addEventListener('click', function() {
+        const qrCodeText = document.getElementById('pago-qrcode-display').textContent;
+        navigator.clipboard.writeText(qrCodeText).then(() => {
+          const originalText = btnCopyPix.innerHTML;
+          btnCopyPix.innerHTML = "✅ CÓDIGO COPIADO!";
+          setTimeout(() => {
+            btnCopyPix.innerHTML = originalText;
+          }, 2000);
+        });
+      });
+    }
+  })();
 })();
+
+// Re-expose showScreen correctly for direct calls
+window.showScreen = window.showScreen || function(id) {
+  const screens = document.querySelectorAll('.screen');
+  screens.forEach(s => {
+    s.classList.remove('is-active');
+    s.setAttribute('aria-hidden', 'true');
+  });
+  const target = document.getElementById(id);
+  if (target) {
+    target.classList.add('is-active');
+    target.removeAttribute('aria-hidden');
+    window.scrollTo(0,0);
+  }
+};
