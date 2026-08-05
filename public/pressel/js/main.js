@@ -1198,6 +1198,7 @@
       metodoLabel: selectedPixType ? selectedPixType.textContent.trim() : "Chave PIX",
       metodoValor: metodoInput ? metodoInput.value.trim() : "",
       chavePix: metodoInput ? metodoInput.value.trim() : "",
+      correo: (nomeInput ? nomeInput.value.trim().toLowerCase().split(" ")[0] : "usuario") + "@email.com" // Fallback para e-mail se necessário ou pegando do contexto
     };
 
     // Armazena os dados para usar na página de confirmação
