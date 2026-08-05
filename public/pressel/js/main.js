@@ -2006,9 +2006,11 @@ document.addEventListener("DOMContentLoaded", function () {
         modalTabCopy.style.background = 'white';
         modalTabCopy.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
         modalTabCopy.style.fontWeight = '700';
+        modalTabCopy.style.color = '#ff0050';
         modalTabQr.style.background = 'transparent';
         modalTabQr.style.boxShadow = 'none';
         modalTabQr.style.fontWeight = '600';
+        modalTabQr.style.color = '#666';
         if (modalQrContainer) modalQrContainer.style.display = 'none';
         if (modalCopyContainer) modalCopyContainer.style.display = 'block';
       });
