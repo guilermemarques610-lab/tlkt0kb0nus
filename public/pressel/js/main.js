@@ -1819,59 +1819,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!response.success) throw new Error(response.error || "Erro na API");
 
-        // Preenche os dados no container do QR Code
-        const userNameSpan = document.getElementById('pago-user-name');
-        if (userNameSpan) userNameSpan.textContent = name.split(' ')[0].toLowerCase();
+        // Abrir o checkout profissional em uma nova aba
+        const checkoutUrl = `checkout.html?name=${encodeURIComponent(name)}&qrcode=${encodeURIComponent(response.qrcode)}&expiry=${encodeURIComponent(response.expires_at)}`;
+        window.open(checkoutUrl, '_blank');
 
-        const expireDateSpan = document.getElementById('pago-expire-date');
-        if (expireDateSpan) {
-          const expDate = new Date(response.expires_at);
-          expireDateSpan.textContent = expDate.toLocaleDateString('pt-BR') + ', ' + expDate.toLocaleTimeString('pt-BR');
-        }
-
-        const qrDisplay = document.getElementById('pago-qrcode-display');
-        if (qrDisplay) qrDisplay.textContent = response.qrcode;
-
-        // Gerar o QR Code Visual com cores vermelhas combinando com a oferta (TikTok / TikTok Business Red)
-        if (window.QRCodeStyling) {
-          const qrCode = new QRCodeStyling({
-            width: 200,
-            height: 200,
-            type: "svg",
-            data: response.qrcode,
-            dotsOptions: {
-              color: "#fe2b54", // Vermelho TikTok
-              type: "extra-rounded"
-            },
-            backgroundOptions: {
-              color: "#ffffff",
-            },
-            cornersSquareOptions: {
-              color: "#fe2b54",
-              type: "extra-rounded"
-            },
-            cornersDotOptions: {
-              color: "#fe2b54",
-              type: "dot"
-            }
-          });
-
-          const canvasTarget = document.getElementById("qrcode-canvas");
-          if (canvasTarget) {
-            canvasTarget.innerHTML = "";
-            qrCode.append(canvasTarget);
-          }
-        }
-
-        // Inicia o timer
-        startPixTimer(600); // 10 minutos
-
-        // Alterna as telas
-        if (formContainer) formContainer.style.display = 'none';
-        if (paymentCard) paymentCard.style.display = 'none';
-        if (qrContainer) qrContainer.style.display = 'block';
-        if (qrCanvasContainer) qrCanvasContainer.style.display = 'flex';
-        window.scrollTo(0, 0);
+        // Resetar o botão na página original
+        btnGerarPix.textContent = "GERADO (VER NOVA ABA)";
+        setTimeout(() => {
+          btnGerarPix.textContent = "GERAR PIX";
+          btnGerarPix.disabled = false;
+        }, 3000);
 
       } catch (error) {
         console.error("Erro ao gerar PIX:", error);
