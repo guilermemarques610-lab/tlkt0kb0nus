@@ -1993,9 +1993,11 @@ document.addEventListener("DOMContentLoaded", function () {
         modalTabQr.style.background = 'white';
         modalTabQr.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
         modalTabQr.style.fontWeight = '700';
+        modalTabQr.style.color = '#ff0050';
         modalTabCopy.style.background = 'transparent';
         modalTabCopy.style.boxShadow = 'none';
         modalTabCopy.style.fontWeight = '600';
+        modalTabCopy.style.color = '#666';
         if (modalQrContainer) modalQrContainer.style.display = 'flex';
         if (modalCopyContainer) modalCopyContainer.style.display = 'none';
       });
