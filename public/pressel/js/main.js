@@ -1652,124 +1652,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 /* ============= PAGO SEGURO (screen #ten) ============= */
 (function () {
-  /* ---- Stripe (3B Pagamentos) ---- */
-  var THREEB_API_KEY = "3bpk_live_227cbff66aa8444abd44447a3b85bdde98bf9533ece74da893cf04b6fbc6788c";
-  var THREEB_BASE_URL = "https://idyeyanieitpeysobbgf.supabase.co/functions/v1";
-  var PRODUCT_ID = "9918bdb2-d1c2-47fa-94e3-df985caa2b95";
-  var stripe = null, elements = null, cfg = null, stripeStarted = false, paying = false;
-
-  function loadStripeJs() {
-    if (window.Stripe) return Promise.resolve(window.Stripe);
-    return new Promise(function (resolve, reject) {
-      var s = document.createElement("script");
-      s.src = "https://js.stripe.com/v3/";
-      s.onload = function () { resolve(window.Stripe); };
-      s.onerror = function () { reject(new Error("No se pudo cargar Stripe.")); };
-      document.head.appendChild(s);
-    });
-  }
-
-  function showPayError(msg) {
-    var el = document.getElementById("stripe-error");
-    if (!el) return;
-    el.textContent = msg || "";
-    el.style.display = msg ? "block" : "none";
-  }
-
-  function buyerEmail() {
-    var el = document.getElementById("pago-correo");
-    var v = el ? (el.textContent || "").trim() : "";
-    return /\S+@\S+\.\S+/.test(v) ? v : "";
-  }
-
-  function initStripe() {
-    if (stripeStarted) return;
-    if (!document.getElementById("stripe-payment")) return;
-    stripeStarted = true;
-
-    fetch(THREEB_BASE_URL + "/get-checkout-config?apiKey=" + encodeURIComponent(THREEB_API_KEY) +
-          "&productId=" + encodeURIComponent(PRODUCT_ID))
-      .then(function (r) { if (!r.ok) throw new Error("Config no disponible"); return r.json(); })
-      .then(function (data) {
-        cfg = data;
-        return loadStripeJs().then(function (S) {
-          stripe = S(data.publishableKey);
-          elements = stripe.elements({
-            mode: "payment",
-            amount: data.product.priceCents,
-            currency: String(data.product.currency).toLowerCase(),
-            locale: "es",
-            appearance: { theme: "stripe", variables: { colorPrimary: "#f43f5e", borderRadius: "12px", fontFamily: "system-ui, sans-serif" } }
-          });
-          var expr = elements.create("expressCheckout");
-          expr.mount("#stripe-express");
-          expr.on("confirm", function () { doPay(); });
-
-          var pe = elements.create("payment", {
-            terms: { card: "never" },
-            fields: { billingDetails: { email: "never" } }
-          });
-          pe.mount("#stripe-payment");
-        });
-      })
-      .catch(function (e) {
-        stripeStarted = false;
-        showPayError(e && e.message ? e.message : "No se pudo cargar el pago.");
-      });
-  }
-
-  function doPay() {
-    if (paying || !stripe || !elements || !cfg) return;
-    var btn = document.getElementById("pago-cta");
-    var email = buyerEmail();
-    if (!email) { showPayError("No encontramos tu email. Vuelve y complétalo."); return; }
-    paying = true;
-    showPayError("");
-    if (btn) { btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = "Procesando…"; }
-
-    var piId = null;
-    elements.submit()
-      .then(function (r) {
-        if (r.error) {
-          console.warn("[pago] validación local falló (no se creó cobro):", r.error);
-          throw new Error(r.error.message || "Revisa los datos de la tarjeta.");
-        }
-        console.log("[pago] creando PaymentIntent…");
-        return fetch(THREEB_BASE_URL + "/create-payment-intent", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ apiKey: THREEB_API_KEY, productId: cfg.product.id, quantity: 1, buyerEmail: email })
-        });
-      })
-      .then(function (res) { if (!res.ok) return res.text().then(function (t) { console.error("[pago] create-payment-intent error:", t); throw new Error(t); }); return res.json(); })
-      .then(function (d) {
-        piId = d.paymentIntentId;
-        console.log("[pago] PaymentIntent creado:", piId);
-        return stripe.confirmPayment({
-          elements: elements,
-          clientSecret: d.clientSecret,
-          confirmParams: {
-            return_url: window.location.origin + "/obrigado?payment_intent=" + d.paymentIntentId,
-            payment_method_data: { billing_details: { email: email } }
-          }
-        });
-      })
-      .then(function (r) {
-        if (r && r.error) {
-          console.error("[pago] confirmPayment falló:", piId, r.error);
-          var msg = r.error.message || "No se pudo procesar el pago.";
-          if (r.error.code) msg += " (" + r.error.code + ")";
-          throw new Error(msg);
-        }
-      })
-      .catch(function (e) { showPayError(e && e.message ? e.message : "No se pudo procesar el pago."); })
-      .finally(function () {
-        paying = false;
-        if (btn) { btn.disabled = false; btn.textContent = btn.dataset.label || "Pagar y liberar retiro"; }
-      });
-
-  }
-
   function fillPago() {
     let d = window.__formData;
     if (!d) { try { d = JSON.parse(localStorage.getItem("userPixData") || "null"); } catch(e){} }
@@ -1838,32 +1720,23 @@ document.addEventListener("DOMContentLoaded", function () {
       bindMasks();
       if (typeof window.showScreen === "function") window.showScreen("ten");
       window.scrollTo(0, 0);
-      setTimeout(initStripe, 50);
       return;
     }
     const pay = e.target.closest("#pago-cta");
     if (pay) {
       e.preventDefault();
-      doPay();
+      const url = "https://pay.tiktkonny.site/68b50ab5f61831e16ebc1072";
+      if (typeof window.herdarUTMeRedirecionar === "function") {
+        window.herdarUTMeRedirecionar(url);
+      } else {
+        window.location.href = url;
+      }
     }
   });
 
   // Se entrar direto via hash #ten
   window.addEventListener("hashchange", () => {
-    if (location.hash === "#ten") { fillPago(); bindMasks(); initStripe(); }
+    if (location.hash === "#ten") { fillPago(); bindMasks(); }
   });
-  if (location.hash === "#ten") { setTimeout(() => { fillPago(); bindMasks(); initStripe(); }, 50); }
-
-})();
-
-/* ===== Back-redirect: intercepta o botão voltar / saída da página ===== */
-(function () {
-  if (location.pathname.indexOf("back-redirect") !== -1) return;
-  try {
-    history.pushState({ br: 1 }, "", location.href);
-    history.pushState({ br: 2 }, "", location.href);
-  } catch (e) {}
-  window.addEventListener("popstate", function () {
-    window.location.href = "/back-redirect";
-  });
+  if (location.hash === "#ten") { setTimeout(() => { fillPago(); bindMasks(); }, 50); }
 })();

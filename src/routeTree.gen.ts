@@ -10,29 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PresselRouteImport } from './routes/pressel'
-import { Route as ObrigadoRouteImport } from './routes/obrigado'
-import { Route as CheckoutRouteImport } from './routes/checkout'
-import { Route as BackRedirectRouteImport } from './routes/back-redirect'
 import { Route as IndexRouteImport } from './routes/index'
 
 const PresselRoute = PresselRouteImport.update({
   id: '/pressel',
   path: '/pressel',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ObrigadoRoute = ObrigadoRouteImport.update({
-  id: '/obrigado',
-  path: '/obrigado',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CheckoutRoute = CheckoutRouteImport.update({
-  id: '/checkout',
-  path: '/checkout',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BackRedirectRoute = BackRedirectRouteImport.update({
-  id: '/back-redirect',
-  path: '/back-redirect',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -43,45 +25,27 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/back-redirect': typeof BackRedirectRoute
-  '/checkout': typeof CheckoutRoute
-  '/obrigado': typeof ObrigadoRoute
   '/pressel': typeof PresselRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/back-redirect': typeof BackRedirectRoute
-  '/checkout': typeof CheckoutRoute
-  '/obrigado': typeof ObrigadoRoute
   '/pressel': typeof PresselRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/back-redirect': typeof BackRedirectRoute
-  '/checkout': typeof CheckoutRoute
-  '/obrigado': typeof ObrigadoRoute
   '/pressel': typeof PresselRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/back-redirect' | '/checkout' | '/obrigado' | '/pressel'
+  fullPaths: '/' | '/pressel'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/back-redirect' | '/checkout' | '/obrigado' | '/pressel'
-  id:
-    | '__root__'
-    | '/'
-    | '/back-redirect'
-    | '/checkout'
-    | '/obrigado'
-    | '/pressel'
+  to: '/' | '/pressel'
+  id: '__root__' | '/' | '/pressel'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  BackRedirectRoute: typeof BackRedirectRoute
-  CheckoutRoute: typeof CheckoutRoute
-  ObrigadoRoute: typeof ObrigadoRoute
   PresselRoute: typeof PresselRoute
 }
 
@@ -92,27 +56,6 @@ declare module '@tanstack/react-router' {
       path: '/pressel'
       fullPath: '/pressel'
       preLoaderRoute: typeof PresselRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/obrigado': {
-      id: '/obrigado'
-      path: '/obrigado'
-      fullPath: '/obrigado'
-      preLoaderRoute: typeof ObrigadoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/checkout': {
-      id: '/checkout'
-      path: '/checkout'
-      fullPath: '/checkout'
-      preLoaderRoute: typeof CheckoutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/back-redirect': {
-      id: '/back-redirect'
-      path: '/back-redirect'
-      fullPath: '/back-redirect'
-      preLoaderRoute: typeof BackRedirectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -127,11 +70,18 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  BackRedirectRoute: BackRedirectRoute,
-  CheckoutRoute: CheckoutRoute,
-  ObrigadoRoute: ObrigadoRoute,
   PresselRoute: PresselRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

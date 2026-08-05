@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import tiktokLogo from "@/assets/tiktok-logo-clean.png.asset.json";
+import tiktokLogo from "@/assets/tiktok-logo.png.asset.json";
 
 export const Route = createFileRoute("/pressel")({
   component: Pressel,
