@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PresselRouteImport } from './routes/pressel'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicGeneratePixRouteImport } from './routes/api/public/generate-pix'
 
 const PresselRoute = PresselRouteImport.update({
   id: '/pressel',
@@ -22,31 +23,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicGeneratePixRoute = ApiPublicGeneratePixRouteImport.update({
+  id: '/api/public/generate-pix',
+  path: '/api/public/generate-pix',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/pressel': typeof PresselRoute
+  '/api/public/generate-pix': typeof ApiPublicGeneratePixRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/pressel': typeof PresselRoute
+  '/api/public/generate-pix': typeof ApiPublicGeneratePixRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/pressel': typeof PresselRoute
+  '/api/public/generate-pix': typeof ApiPublicGeneratePixRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/pressel'
+  fullPaths: '/' | '/pressel' | '/api/public/generate-pix'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/pressel'
-  id: '__root__' | '/' | '/pressel'
+  to: '/' | '/pressel' | '/api/public/generate-pix'
+  id: '__root__' | '/' | '/pressel' | '/api/public/generate-pix'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PresselRoute: typeof PresselRoute
+  ApiPublicGeneratePixRoute: typeof ApiPublicGeneratePixRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,13 +75,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/generate-pix': {
+      id: '/api/public/generate-pix'
+      path: '/api/public/generate-pix'
+      fullPath: '/api/public/generate-pix'
+      preLoaderRoute: typeof ApiPublicGeneratePixRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PresselRoute: PresselRoute,
+  ApiPublicGeneratePixRoute: ApiPublicGeneratePixRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
