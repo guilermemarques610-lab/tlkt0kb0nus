@@ -852,7 +852,7 @@
 
     // Lógica específica para abrir o modal de seleção de PIX (#six)
     if (modalId === "six") {
-      const selectorText = document.getElementById("pix-selector-text");
+      const selectorText = document.getElementById("selected-pix-type");
       if (selectorText) {
         const currentType = selectorText.textContent.trim();
 
