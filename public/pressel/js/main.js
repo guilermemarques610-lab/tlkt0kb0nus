@@ -1055,9 +1055,29 @@
 
     // Atualiza o texto do seletor na tela #five
     const selectorText = document.getElementById("selected-pix-type");
+    const methodLabel = document.querySelector('label[for="metodo-input"]');
+    const methodInput = document.getElementById('metodo-input');
+
     if (selectorText) {
       selectorText.textContent = selectedType;
       selectorText.style.color = "#000";
+    }
+
+    // Atualiza label e placeholder conforme o tipo selecionado
+    if (methodLabel && methodInput) {
+      if (selectedType === 'CPF') {
+        methodLabel.textContent = 'Número do CPF';
+        methodInput.placeholder = '000.000.000-00';
+      } else if (selectedType === 'E-mail') {
+        methodLabel.textContent = 'E-mail';
+        methodInput.placeholder = 'exemplo@email.com';
+      } else if (selectedType === 'Celular') {
+        methodLabel.textContent = 'Número de telefone';
+        methodInput.placeholder = '(00) 00000-0000';
+      } else if (selectedType === 'Chave aleatória') {
+        methodLabel.textContent = 'Chave aleatória';
+        methodInput.placeholder = '00000000-0000-0000-0000-000000000000';
+      }
     }
 
     // Habilita o input de chave

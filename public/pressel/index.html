@@ -520,7 +520,8 @@
       </section>
       <section id="five" class="screen" aria-hidden="true">
         <div class="modal-inner inner-pop saque-popup">
-          <div class="title saque-title" style="justify-content: center; font-weight: 700; border-bottom: 1px solid #eee;">
+          <div class="title saque-title" style="justify-content: center; font-weight: 700; border-bottom: 1px solid #eee; position: relative;">
+            <a href="javascript:void(0)" class="back-link" onclick="showScreen('one')" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 14px; font-weight: 400; color: #999; text-decoration: none;">&lt; Voltar</a>
             Vincular PIX
           </div>
 
@@ -539,8 +540,8 @@
             </div>
 
             <div class="form-group">
-              <label class="field-label" for="metodo-input">Chave PIX</label>
-              <input type="text" id="metodo-input" placeholder="Digite sua chave PIX" class="nome-completo" style="margin-top: 12px; padding-bottom: 12px; border: none; border-bottom: 1px solid #eee; width: 100%; font-size: 14px;">
+              <label class="field-label" for="metodo-input">Número de telefone</label>
+              <input type="text" id="metodo-input" placeholder="+34 600 000 000" class="nome-completo" style="margin-top: 12px; padding-bottom: 12px; border: none; border-bottom: 1px solid #eee; width: 100%; font-size: 14px;">
             </div>
 
             <button type="button" id="btn-enviar-pix" class="btn-obrigado btn-sacar-dois btn-vincular btn-disabled" aria-label="Enviar">
@@ -552,7 +553,10 @@
       <section id="six" class="screen" aria-hidden="true">
         <div class="modal-inner inner-pop">
           <div class="saque-popup chave-pix">
-            <div class="title saque-title">Tipo de Chave PIX</div>
+            <div class="title saque-title" style="justify-content: center; font-weight: 700; border-bottom: 1px solid #eee; position: relative;">
+              <a href="javascript:void(0)" class="back-link" onclick="showScreen('five')" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 14px; font-weight: 400; color: #999; text-decoration: none;">&lt; Voltar</a>
+              Escolha o tipo
+            </div>
             <div class="selection-container">
               <div class="option-row">
                 <label for="key-cpf">
