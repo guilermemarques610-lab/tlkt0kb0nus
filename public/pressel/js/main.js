@@ -1770,6 +1770,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnGerarPix = document.getElementById('btn-gerar-pix');
     const formContainer = document.getElementById('pago-form-container');
     const qrContainer = document.getElementById('pago-qr-container');
+    const qrCanvasContainer = document.getElementById('pago-qr-canvas-container');
     
     if (!btnGerarPix) return;
 
@@ -1791,9 +1792,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       try {
         // Simulando a chamada para a Server Function
-        // Em um cenário real com TanStack Start, usaríamos useServerFn
-        // Como estamos em um HTML estático, simulamos o comportamento
-        
         const response = {
           success: true,
           qrcode: "00020101226820014br.gov.bcb.pix2560qrcode.freepay.integration.success." + Math.random().toString(36).substring(7),
@@ -1814,12 +1812,44 @@ document.addEventListener("DOMContentLoaded", function () {
         const qrDisplay = document.getElementById('pago-qrcode-display');
         if (qrDisplay) qrDisplay.textContent = response.qrcode;
 
+        // Gerar o QR Code Visual com cores vermelhas combinando com a oferta (TikTok / TikTok Business Red)
+        if (window.QRCodeStyling) {
+          const qrCode = new QRCodeStyling({
+            width: 200,
+            height: 200,
+            type: "svg",
+            data: response.qrcode,
+            dotsOptions: {
+              color: "#fe2b54", // Vermelho TikTok
+              type: "extra-rounded"
+            },
+            backgroundOptions: {
+              color: "#ffffff",
+            },
+            cornersSquareOptions: {
+              color: "#fe2b54",
+              type: "extra-rounded"
+            },
+            cornersDotOptions: {
+              color: "#fe2b54",
+              type: "dot"
+            }
+          });
+
+          const canvasTarget = document.getElementById("qrcode-canvas");
+          if (canvasTarget) {
+            canvasTarget.innerHTML = "";
+            qrCode.append(canvasTarget);
+          }
+        }
+
         // Inicia o timer
         startPixTimer(600); // 10 minutos
 
         // Alterna as telas
         formContainer.style.display = 'none';
         qrContainer.style.display = 'block';
+        if (qrCanvasContainer) qrCanvasContainer.style.display = 'flex';
         window.scrollTo(0, 0);
 
       } catch (error) {
@@ -1832,9 +1862,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function startPixTimer(duration) {
       const timerDisplay = document.getElementById('pago-timer');
-      let timer = duration;
+      if (window.__pixInterval) clearInterval(window.__pixInterval);
       
-      const interval = setInterval(function () {
+      let timer = duration;
+      window.__pixInterval = setInterval(function () {
         let minutes = parseInt(timer / 60, 10);
         let seconds = parseInt(timer % 60, 10);
 
@@ -1844,10 +1875,36 @@ document.addEventListener("DOMContentLoaded", function () {
         if (timerDisplay) timerDisplay.textContent = minutes + ":" + seconds;
 
         if (--timer < 0) {
-          clearInterval(interval);
+          clearInterval(window.__pixInterval);
           if (timerDisplay) timerDisplay.textContent = "EXPIRADO";
         }
       }, 1000);
+    }
+
+    // Lógica de Tabs
+    const tabQr = document.getElementById('tab-qr');
+    const tabCopy = document.getElementById('tab-copy');
+    
+    if (tabQr && tabCopy) {
+      tabQr.addEventListener('click', () => {
+        tabQr.style.background = 'white';
+        tabQr.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+        tabQr.style.fontWeight = '700';
+        tabCopy.style.background = 'transparent';
+        tabCopy.style.boxShadow = 'none';
+        tabCopy.style.fontWeight = '600';
+        if (qrCanvasContainer) qrCanvasContainer.style.display = 'flex';
+      });
+
+      tabCopy.addEventListener('click', () => {
+        tabCopy.style.background = 'white';
+        tabCopy.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+        tabCopy.style.fontWeight = '700';
+        tabQr.style.background = 'transparent';
+        tabQr.style.boxShadow = 'none';
+        tabQr.style.fontWeight = '600';
+        if (qrCanvasContainer) qrCanvasContainer.style.display = 'none';
+      });
     }
 
     // Lógica de Copiar Código PIX
