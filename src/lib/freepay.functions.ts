@@ -12,10 +12,10 @@ export const generatePixQrCode = createServerFn({ method: "POST" })
     const secretKey = process.env['FREEPAY_SECRET_KEY'];
 
     if (!apiKey || !secretKey) {
-      console.warn("FreePay credentials missing, returning mock data");
+      console.warn("FreePay credentials missing, returning demo data");
       return {
         success: true,
-        qrcode: "00020101226820014br.gov.bcb.pix2560qrcode.freepay.mock.payload",
+        qrcode: "00020101226820014br.gov.bcb.pix2560qrcode.freepay.demo.payload." + Math.random().toString(36).substring(7),
         expires_at: new Date(Date.now() + 600000).toISOString(),
         amount: data.amount
       };

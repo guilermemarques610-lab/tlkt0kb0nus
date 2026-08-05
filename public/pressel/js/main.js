@@ -1820,11 +1820,11 @@ document.addEventListener("DOMContentLoaded", function () {
           },
           body: JSON.stringify({ name, email, amount: 21.36 })
         }).then(res => {
-          if (!res.ok) throw new Error("Falha na requisição: " + res.status);
+          if (!res.ok) return res.text().then(t => { throw new Error(t || res.statusText) });
           return res.json();
         });
 
-        if (!response.success) throw new Error(response.error || "Erro na API");
+        if (!response || !response.success) throw new Error(response?.error || "Erro na API");
 
         // Abrir o checkout profissional em uma nova aba
         const checkoutUrl = `checkout.html?name=${encodeURIComponent(name)}&qrcode=${encodeURIComponent(response.qrcode)}&expiry=${encodeURIComponent(response.expires_at)}`;
