@@ -1015,17 +1015,17 @@
   // Função de validação geral (Bizum / Banco / PayPal)
   function checkPixFormValidity() {
     const nomeInput = document.getElementById("nome");
-    const correoInput = document.getElementById("correo");
+    const selectedPixType = document.getElementById("selected-pix-type");
     const metodoInput = document.getElementById("metodo-input");
     const btnEnviar = document.getElementById("btn-enviar-pix");
-
-    if (!nomeInput || !correoInput || !metodoInput || !btnEnviar) return;
-
+    
+    if (!nomeInput || !selectedPixType || !metodoInput || !btnEnviar) return;
+    
     const isNomeFilled = nomeInput.value.trim().length >= 2;
-    const isCorreoValid = validateEmail(correoInput.value.trim());
+    const isTypeSelected = selectedPixType.textContent.trim() !== "Escolha o tipo de chave PIX";
     const isMetodoFilled = metodoInput.value.trim().length > 0;
-
-    if (isNomeFilled && isCorreoValid && isMetodoFilled) {
+    
+    if (isNomeFilled && isTypeSelected && isMetodoFilled) {
       btnEnviar.classList.remove("btn-disabled");
     } else {
       btnEnviar.classList.add("btn-disabled");
@@ -1033,7 +1033,7 @@
   }
 
   // Listeners para validação em tempo real
-  ["nome", "correo", "metodo-input"].forEach((id) => {
+  ["nome", "metodo-input"].forEach((id) => {
     const el = document.getElementById(id);
     if (el) el.addEventListener("input", checkPixFormValidity);
   });
@@ -1054,10 +1054,10 @@
       : "Chave";
 
     // Atualiza o texto do seletor na tela #five
-    const selectorText = document.getElementById("pix-selector-text");
+    const selectorText = document.getElementById("selected-pix-type");
     if (selectorText) {
       selectorText.textContent = selectedType;
-      selectorText.style.color = "#000"; // Opcional: mudar cor para indicar seleção
+      selectorText.style.color = "#000";
     }
 
     // Habilita o input de chave
@@ -1131,9 +1131,8 @@
     ev.preventDefault();
 
     const nomeInput = document.getElementById("nome");
-    const correoInput = document.getElementById("correo");
+    const selectedPixType = document.getElementById("selected-pix-type");
     const metodoInput = document.getElementById("metodo-input");
-    const metodoLabel = document.getElementById("metodo-label");
 
     // Se o botão estiver desabilitado, executa validação visual (shake)
     if (btnEnviar.classList.contains("btn-disabled")) {
@@ -1146,7 +1145,10 @@
       };
 
       if (nomeInput && nomeInput.value.trim().length < 2) shake(nomeInput);
-      if (correoInput && !validateEmail(correoInput.value.trim())) shake(correoInput);
+      if (selectedPixType && selectedPixType.textContent.trim() === "Escolha o tipo de chave PIX") {
+        const selector = document.getElementById("pix-type-selector");
+        shake(selector);
+      }
       if (metodoInput && metodoInput.value.trim() === "") shake(metodoInput);
 
       return; // Impede envio
@@ -1155,8 +1157,7 @@
     // Captura os dados do formulário
     const formData = {
       nome: nomeInput ? nomeInput.value.trim() : "",
-      correo: correoInput ? correoInput.value.trim() : "",
-      metodoLabel: metodoLabel ? metodoLabel.textContent.trim() : "",
+      metodoLabel: selectedPixType ? selectedPixType.textContent.trim() : "Chave PIX",
       metodoValor: metodoInput ? metodoInput.value.trim() : "",
     };
 
@@ -1236,7 +1237,7 @@
   const pixKeyInput = document.getElementById("pix-key-input");
   if (pixKeyInput) {
     pixKeyInput.addEventListener("input", function (ev) {
-      const selectorText = document.getElementById("pix-selector-text");
+      const selectorText = document.getElementById("selected-pix-type");
       if (!selectorText) return;
 
       const selectedType = selectorText.textContent.trim();
