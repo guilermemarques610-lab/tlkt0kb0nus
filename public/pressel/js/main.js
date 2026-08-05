@@ -686,6 +686,23 @@
           }
         }, 150);
       }
+
+      // Preenche dados no checkout (#ten) quando ela for exibida
+      if (id === "ten") {
+        const stored = localStorage.getItem("userPixData");
+        if (stored) {
+          try {
+            const formData = JSON.parse(stored);
+            const checkoutName = document.getElementById("pago-user-name");
+            const checkoutEmail = document.getElementById("pago-user-email");
+            if (checkoutName && formData.nome) checkoutName.value = formData.nome;
+            // Se tivermos um email dos dados anteriores (atualmente o código guarda como formData.correo)
+            if (checkoutEmail && formData.correo) checkoutEmail.value = formData.correo;
+          } catch (e) {
+            console.error("Erro ao preencher checkout", e);
+          }
+        }
+      }
     }
 
     window.addEventListener("popstate", (ev) => {
