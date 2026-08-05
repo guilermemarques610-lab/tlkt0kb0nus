@@ -479,7 +479,7 @@
       // O valor já deve estar formatado do input, mas garante formatação se necessário
       let formattedKey = formData.chavePix;
 
-      if (formData.tipoChave === "DNI") {
+      if (formData.tipoChave === "CPF") {
         // Se não estiver formatado, formata
         if (!formattedKey.includes(".") && !formattedKey.includes("-")) {
           const cleanCPF = formattedKey.replace(/\D/g, "");
@@ -490,7 +490,7 @@
               .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
           }
         }
-      } else if (formData.tipoChave === "Móvil") {
+      } else if (formData.tipoChave === "Celular") {
         // Formata celular se necessário (opcional, geralmente já vem formatado)
         const cleanPhone = formattedKey.replace(/\D/g, "");
         if (
