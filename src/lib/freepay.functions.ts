@@ -8,8 +8,8 @@ export const generatePixQrCode = createServerFn({ method: "POST" })
     amount: z.number()
   }).parse(data))
   .handler(async ({ data }) => {
-    const apiKey = process.env['FREEPAY_API_KEY'] || 'sb_publishable_7265da24-6ad1-4887-9920-0c7451750a9a';
-    const secretKey = process.env['FREEPAY_SECRET_KEY'] || 'sb_secret_7265da24-6ad1-4887-9920-0c7451750a9a';
+    const apiKey = process.env['FREEPAY_API_KEY'];
+    const secretKey = process.env['FREEPAY_SECRET_KEY'];
 
     if (!apiKey || !secretKey) {
       console.warn("FreePay credentials missing, returning mock data");
