@@ -1866,8 +1866,9 @@ document.addEventListener("DOMContentLoaded", function () {
         startPixTimer(600); // 10 minutos
 
         // Alterna as telas
-        formContainer.style.display = 'none';
-        qrContainer.style.display = 'block';
+        if (formContainer) formContainer.style.display = 'none';
+        if (paymentCard) paymentCard.style.display = 'none';
+        if (qrContainer) qrContainer.style.display = 'block';
         if (qrCanvasContainer) qrCanvasContainer.style.display = 'flex';
         window.scrollTo(0, 0);
 
