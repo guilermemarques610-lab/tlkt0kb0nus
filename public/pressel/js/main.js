@@ -1828,7 +1828,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Preencher dados no modal interno
         const nameDisplay = document.getElementById('modal-user-name');
-        if (nameDisplay) nameDisplay.textContent = name.split(' ')[0].toLowerCase();
+        if (nameDisplay) {
+          const namePart = name.split(' ')[0].toLowerCase();
+          nameDisplay.textContent = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+        }
         
         const payloadBox = document.getElementById('modal-payload-box');
         if (payloadBox) payloadBox.textContent = response.qrcode;
