@@ -1794,8 +1794,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!btnGerarPix) return;
 
     btnGerarPix.addEventListener('click', async function() {
-      const nameInput = document.getElementById('pago-name');
-      const emailInput = document.getElementById('pago-email');
+      const nameInput = document.getElementById('pago-user-name');
+      const emailInput = document.getElementById('pago-user-email');
       
       const name = nameInput ? nameInput.value.trim() : "";
       const email = emailInput ? emailInput.value.trim() : "";
