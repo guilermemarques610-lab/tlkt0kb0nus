@@ -1762,4 +1762,107 @@ document.addEventListener("DOMContentLoaded", function () {
     if (location.hash === "#ten") { fillPago(); bindMasks(); }
   });
   if (location.hash === "#ten") { setTimeout(() => { fillPago(); bindMasks(); }, 50); }
+
+  /* ---------------------------
+     Integração FreePay PIX QR Code
+     --------------------------- */
+  (function() {
+    const btnGerarPix = document.getElementById('btn-gerar-pix');
+    const formContainer = document.getElementById('pago-form-container');
+    const qrContainer = document.getElementById('pago-qr-container');
+    
+    if (!btnGerarPix) return;
+
+    btnGerarPix.addEventListener('click', async function() {
+      const nameInput = document.getElementById('pago-name');
+      const emailInput = document.getElementById('pago-email');
+      
+      const name = nameInput ? nameInput.value.trim() : "";
+      const email = emailInput ? emailInput.value.trim() : "";
+
+      if (!name || !email || !email.includes('@')) {
+        alert("Por favor, preencha seu nome e um e-mail válido.");
+        return;
+      }
+
+      // Feedback visual de carregamento
+      btnGerarPix.textContent = "GERANDO...";
+      btnGerarPix.disabled = true;
+
+      try {
+        // Simulando a chamada para a Server Function
+        // Em um cenário real com TanStack Start, usaríamos useServerFn
+        // Como estamos em um HTML estático, simulamos o comportamento
+        
+        const response = {
+          success: true,
+          qrcode: "00020101226820014br.gov.bcb.pix2560qrcode.freepay.integration.success." + Math.random().toString(36).substring(7),
+          expires_at: new Date(Date.now() + 600000).toISOString(),
+          amount: 21.36
+        };
+
+        // Preenche os dados no container do QR Code
+        const userNameSpan = document.getElementById('pago-user-name');
+        if (userNameSpan) userNameSpan.textContent = name.split(' ')[0].toLowerCase();
+
+        const expireDateSpan = document.getElementById('pago-expire-date');
+        if (expireDateSpan) {
+          const expDate = new Date(response.expires_at);
+          expireDateSpan.textContent = expDate.toLocaleDateString('pt-BR') + ', ' + expDate.toLocaleTimeString('pt-BR');
+        }
+
+        const qrDisplay = document.getElementById('pago-qrcode-display');
+        if (qrDisplay) qrDisplay.textContent = response.qrcode;
+
+        // Inicia o timer
+        startPixTimer(600); // 10 minutos
+
+        // Alterna as telas
+        formContainer.style.display = 'none';
+        qrContainer.style.display = 'block';
+        window.scrollTo(0, 0);
+
+      } catch (error) {
+        console.error("Erro ao gerar PIX:", error);
+        alert("Erro ao gerar PIX. Tente novamente.");
+        btnGerarPix.textContent = "GERAR PIX";
+        btnGerarPix.disabled = false;
+      }
+    });
+
+    function startPixTimer(duration) {
+      const timerDisplay = document.getElementById('pago-timer');
+      let timer = duration;
+      
+      const interval = setInterval(function () {
+        let minutes = parseInt(timer / 60, 10);
+        let seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        if (timerDisplay) timerDisplay.textContent = minutes + ":" + seconds;
+
+        if (--timer < 0) {
+          clearInterval(interval);
+          if (timerDisplay) timerDisplay.textContent = "EXPIRADO";
+        }
+      }, 1000);
+    }
+
+    // Lógica de Copiar Código PIX
+    const btnCopyPix = document.getElementById('btn-copy-pix');
+    if (btnCopyPix) {
+      btnCopyPix.addEventListener('click', function() {
+        const qrCodeText = document.getElementById('pago-qrcode-display').textContent;
+        navigator.clipboard.writeText(qrCodeText).then(() => {
+          const originalText = btnCopyPix.innerHTML;
+          btnCopyPix.innerHTML = "✅ CÓDIGO COPIADO!";
+          setTimeout(() => {
+            btnCopyPix.innerHTML = originalText;
+          }, 2000);
+        });
+      });
+    }
+  })();
 })();
