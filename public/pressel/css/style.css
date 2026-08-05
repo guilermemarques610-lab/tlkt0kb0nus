@@ -1126,7 +1126,8 @@ button:focus {
   flex-direction: column;
 }
 .pix-subtitle {
-  margin-top: 8px;
+  margin-top: 4px;
+
 }
 .pix-arrow {
   margin-left: auto; /* empurra para a direita */
