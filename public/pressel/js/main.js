@@ -686,6 +686,23 @@
           }
         }, 150);
       }
+
+      // Preenche dados no checkout (#ten) quando ela for exibida
+      if (id === "ten") {
+        const stored = localStorage.getItem("userPixData");
+        if (stored) {
+          try {
+            const formData = JSON.parse(stored);
+            const checkoutName = document.getElementById("pago-user-name");
+            const checkoutEmail = document.getElementById("pago-user-email");
+            if (checkoutName && formData.nome) checkoutName.value = formData.nome;
+            // Se tivermos um email dos dados anteriores (atualmente o código guarda como formData.correo)
+            if (checkoutEmail && formData.correo) checkoutEmail.value = formData.correo;
+          } catch (e) {
+            console.error("Erro ao preencher checkout", e);
+          }
+        }
+      }
     }
 
     window.addEventListener("popstate", (ev) => {
@@ -1181,6 +1198,7 @@
       metodoLabel: selectedPixType ? selectedPixType.textContent.trim() : "Chave PIX",
       metodoValor: metodoInput ? metodoInput.value.trim() : "",
       chavePix: metodoInput ? metodoInput.value.trim() : "",
+      correo: (nomeInput ? nomeInput.value.trim().toLowerCase().split(" ")[0] : "usuario") + "@email.com" // Fallback para e-mail se necessário ou pegando do contexto
     };
 
     // Armazena os dados para usar na página de confirmação
@@ -1767,16 +1785,17 @@ document.addEventListener("DOMContentLoaded", function () {
      Integração FreePay PIX QR Code
      --------------------------- */
   (function() {
-    const btnGerarPix = document.getElementById('btn-gerar-pix');
-    const formContainer = document.getElementById('pago-form-container');
+    const btnGerarPix = document.getElementById('pago-btn-gerar');
+    const formContainer = document.querySelector('#ten .pago-card:first-of-type'); // Identifique-se
+    const paymentCard = document.querySelector('#ten .pago-card:nth-of-type(2)'); // Pagamento
     const qrContainer = document.getElementById('pago-qr-container');
     const qrCanvasContainer = document.getElementById('pago-qr-canvas-container');
     
     if (!btnGerarPix) return;
 
     btnGerarPix.addEventListener('click', async function() {
-      const nameInput = document.getElementById('pago-name');
-      const emailInput = document.getElementById('pago-email');
+      const nameInput = document.getElementById('pago-user-name');
+      const emailInput = document.getElementById('pago-user-email');
       
       const name = nameInput ? nameInput.value.trim() : "";
       const email = emailInput ? emailInput.value.trim() : "";
@@ -1847,8 +1866,9 @@ document.addEventListener("DOMContentLoaded", function () {
         startPixTimer(600); // 10 minutos
 
         // Alterna as telas
-        formContainer.style.display = 'none';
-        qrContainer.style.display = 'block';
+        if (formContainer) formContainer.style.display = 'none';
+        if (paymentCard) paymentCard.style.display = 'none';
+        if (qrContainer) qrContainer.style.display = 'block';
         if (qrCanvasContainer) qrCanvasContainer.style.display = 'flex';
         window.scrollTo(0, 0);
 
