@@ -2854,40 +2854,6 @@ input.confirmation-receipt-input:focus {
 
 .pago-container { max-width: 480px; margin: 0 auto; padding: 0 16px 24px; }
 
-.pago-hero-modern {
-  background: #000;
-  color: #fff;
-  border-radius: 20px;
-  text-align: center;
-  padding: 30px 16px;
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-.pago-hero-label-modern {
-  font-size: 13px;
-  font-weight: 700;
-  color: #a0a0a0;
-  letter-spacing: 0.8px;
-  margin-bottom: 12px;
-  text-transform: uppercase;
-}
-.pago-hero-amount-modern {
-  font-size: 48px;
-  font-weight: 800;
-  margin: 0 0 12px;
-  letter-spacing: -1px;
-}
-.pago-hero-sub-modern {
-  font-size: 15px;
-  color: #a0a0a0;
-  margin: 0;
-  font-weight: 500;
-}
-
 .pago-hero { background: #000; color: #fff; border-radius: 16px; text-align: center; padding: 24px 16px; margin-bottom: 16px; }
 .pago-hero-label { font-size: 11px; font-weight: 700; color: #a0a0a0; letter-spacing: 0.5px; margin-bottom: 6px; text-transform: uppercase; }
 .pago-hero-amount { font-size: 36px; font-weight: 800; margin: 0 0 6px; }
