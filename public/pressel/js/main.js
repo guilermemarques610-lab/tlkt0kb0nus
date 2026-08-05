@@ -859,9 +859,9 @@
         // Mapeamento de Texto -> ID do Radio
         const typeToId = {
           CPF: "key-cpf",
-          "Correo electrónico": "key-email",
+          "E-mail": "key-email",
           Celular: "key-celular",
-          "Clave aleatoria": "key-aleatoria",
+          "Chave aleatória": "key-aleatoria",
         };
 
         const radioId = typeToId[currentType];
