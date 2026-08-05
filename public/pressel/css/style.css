@@ -1069,8 +1069,9 @@ button:focus {
   text-decoration: none;
 }
 .pix-solo {
-  width: 13px;
-  height: 13px;
+  width: 48px;
+  height: auto;
+  padding: 4px;
 }
 .pix-title {
   align-self: stretch;
