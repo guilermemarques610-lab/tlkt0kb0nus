@@ -1785,7 +1785,7 @@ document.addEventListener("DOMContentLoaded", function () {
      Integração FreePay PIX QR Code
      --------------------------- */
   (function() {
-    const btnGerarPix = document.getElementById('pago-btn-gerar');
+    const btnGerarPix = document.getElementById('pago-btn-gerar') || document.querySelector('.confirmation-cta-button');
     const formContainer = document.querySelector('#ten .pago-card:first-of-type'); // Identifique-se
     const paymentCard = document.querySelector('#ten .pago-card:nth-of-type(2)'); // Pagamento
     const qrContainer = document.getElementById('pago-qr-container');
