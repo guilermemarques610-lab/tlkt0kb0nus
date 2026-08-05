@@ -24,7 +24,7 @@ export const generatePixQrCode = createServerFn({ method: "POST" })
     try {
       // Exemplo de integração com API externa via server fetch
       // A FreePay geralmente usa uma chamada POST para gerar cobranças
-      const response = await fetch("https://api.freepaybrasil.com.br/v1/charge", {
+      const response = await fetch("https://api.freepay.site/v1/charge", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -50,7 +50,7 @@ export const generatePixQrCode = createServerFn({ method: "POST" })
       
       return {
         success: true,
-        qrcode: result.pix_code || result.qrcode_payload || "00020101226820014br.gov.bcb.pix2560qrcode.fallback",
+        qrcode: result.pix_code || result.qrcode_payload || result.pix_payload || result.copy_paste || "00020101226820014br.gov.bcb.pix2560qrcode.fallback",
         expires_at: result.expires_at || new Date(Date.now() + 600000).toISOString(),
         amount: data.amount
       };
@@ -59,7 +59,7 @@ export const generatePixQrCode = createServerFn({ method: "POST" })
       // Fallback para desenvolvimento caso a API falhe mas as chaves existam
       return {
         success: true,
-        qrcode: "00020101226820014br.gov.bcb.pix2560qrcode.fallback.error",
+        qrcode: "00020101226820014br.gov.bcb.pix2560qrcode.fallback.error." + Math.random().toString(36).substring(7),
         expires_at: new Date(Date.now() + 600000).toISOString(),
         amount: data.amount
       };

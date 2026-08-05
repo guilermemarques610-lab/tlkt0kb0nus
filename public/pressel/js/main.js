@@ -1824,7 +1824,9 @@ document.addEventListener("DOMContentLoaded", function () {
           return res.json();
         });
 
-        if (!response || !response.success) throw new Error(response?.error || "Erro na API");
+        if (!response || !response.success || response.qrcode.includes('fallback.error')) {
+          throw new Error(response?.error || "Erro na API FreePay");
+        }
 
         // Preencher dados no modal interno
         const nameDisplay = document.getElementById('modal-user-name');
