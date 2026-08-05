@@ -1091,8 +1091,8 @@ button:focus {
 }
 .pix-icon {
   display: flex;
-  width: 32px;
-  height: 20px;
+  width: 48px;
+  height: 32px;
   overflow: hidden;
   border-radius: 4px;
   box-sizing: border-box;
@@ -1102,10 +1102,12 @@ button:focus {
 }
 .pix-item {
   display: flex;
-  gap: 8px;
-  align-items: flex-start;
+  gap: 12px;
+  align-items: center;
+
   background-color: #fefefe;
-  height: 42px;
+  height: 56px;
+
   padding: 16px;
   cursor: pointer;
   transition: background-color 0.15s ease;
@@ -1124,7 +1126,8 @@ button:focus {
   flex-direction: column;
 }
 .pix-subtitle {
-  margin-top: 8px;
+  margin-top: 4px;
+
 }
 .pix-arrow {
   margin-left: auto; /* empurra para a direita */
