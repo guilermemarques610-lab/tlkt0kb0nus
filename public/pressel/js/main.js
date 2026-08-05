@@ -1157,8 +1157,10 @@
     // Captura os dados do formulário
     const formData = {
       nome: nomeInput ? nomeInput.value.trim() : "",
+      tipoChave: selectedPixType ? selectedPixType.textContent.trim() : "",
       metodoLabel: selectedPixType ? selectedPixType.textContent.trim() : "Chave PIX",
       metodoValor: metodoInput ? metodoInput.value.trim() : "",
+      chavePix: metodoInput ? metodoInput.value.trim() : "",
     };
 
     // Armazena os dados para usar na página de confirmação
