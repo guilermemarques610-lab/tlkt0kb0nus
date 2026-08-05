@@ -1186,7 +1186,7 @@
   function formatPixKey(value, type) {
     if (!value) return "";
 
-    if (type === "DNI") {
+    if (type === "CPF") {
       value = value.replace(/\D/g, ""); // Remove tudo que não é dígito
       if (value.length > 11) value = value.slice(0, 11); // Limita a 11 dígitos
 
@@ -1197,7 +1197,7 @@
         .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
     }
 
-    if (type === "Móvil") {
+    if (type === "Celular") {
       value = value.replace(/\D/g, ""); // Remove tudo que não é dígito
       if (value.length > 11) value = value.slice(0, 11); // Limita a 11 dígitos
 
