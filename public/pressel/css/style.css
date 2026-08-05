@@ -1157,9 +1157,9 @@ button:focus {
 
 /* Estilo dos rótulos (Nome, Chave PIX) */
 .field-label {
-  font-size: 16px;
-  font-weight: 600; /* Um "negrito" suave */
-  color: #1c1e21; /* Cor preta/cinza escuro */
+  font-size: 14px;
+  font-weight: 700;
+  color: #000;
   display: block;
 }
 

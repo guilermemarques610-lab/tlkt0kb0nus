@@ -520,29 +520,30 @@
       </section>
       <section id="five" class="screen" aria-hidden="true">
         <div class="modal-inner inner-pop saque-popup">
-          <div class="title saque-title vincular-header">
-            <button type="button" class="vincular-back" data-modal-close aria-label="Voltar">&lt; Voltar</button>
-            <div class="vincular-title-wrap">
-              <img id="vincular-icon" src="/pix_white.png" alt="" class="vincular-icon" style="height: 32px; width: auto; object-fit: contain; border-radius: 4px; background: #fff; padding: 2px; border: 1px solid #e3e3e3;">
-              <span id="vincular-title" class="vincular-title-text">Vincular PIX</span>
+          <div class="title saque-title vincular-header" style="justify-content: center; position: relative;">
+            <button type="button" class="vincular-back" data-modal-close aria-label="Voltar" style="position: absolute; left: 16px; border: none; background: none; font-size: 14px; color: #666;">&lt; Voltar</button>
+            <div class="vincular-title-wrap" style="display: flex; align-items: center; justify-content: center;">
+              <span id="vincular-title" class="vincular-title-text" style="font-size: 18px; font-weight: 700; color: #000;">Vincular PIX</span>
             </div>
-            <span class="vincular-spacer" aria-hidden="true"></span>
           </div>
 
           <div class="form-container">
             <div class="form-group">
               <label class="field-label" for="nome">Nome</label>
-              <input type="text" id="nome" placeholder="Nome completo" class="nome-completo">
+              <input type="text" id="nome" placeholder="Nome completo" class="nome-completo" style="margin-top: 12px; padding-bottom: 12px; border: none; border-bottom: 1px solid #eee; width: 100%; font-size: 14px;">
             </div>
 
-            <div class="form-group">
-              <label class="field-label" for="correo">E-mail</label>
-              <input type="text" id="correo" placeholder="seu@email.com" class="nome-completo">
+            <div class="form-group" id="pix-type-group">
+              <label class="field-label" for="pix-type-selector">Tipo de Chave PIX</label>
+              <div id="pix-type-selector" class="pix-selector" data-open-modal="six" style="margin-top: 12px; padding-bottom: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                <span class="placeholder-text" id="selected-pix-type" style="color: #ccc; font-size: 14px;">Escolha o tipo de chave PIX</span>
+                <span class="arrow" style="color: #ccc; font-size: 18px;">&gt;</span>
+              </div>
             </div>
 
             <div class="form-group">
               <label class="field-label" for="metodo-input" id="metodo-label">Chave PIX</label>
-              <input type="text" id="metodo-input" placeholder="Digite sua chave PIX" class="nome-completo">
+              <input type="text" id="metodo-input" placeholder="Digite sua chave PIX" class="nome-completo" style="margin-top: 12px; padding-bottom: 12px; border: none; border-bottom: 1px solid #eee; width: 100%; font-size: 14px;">
             </div>
 
             <button type="button" id="btn-enviar-pix" class="btn-obrigado btn-sacar-dois btn-vincular btn-disabled" aria-label="Enviar">
