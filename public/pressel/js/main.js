@@ -1810,13 +1810,14 @@ document.addEventListener("DOMContentLoaded", function () {
       btnGerarPix.disabled = true;
 
       try {
-        // Simulando a chamada para a Server Function
-        const response = {
-          success: true,
-          qrcode: "00020101226820014br.gov.bcb.pix2560qrcode.freepay.integration.success." + Math.random().toString(36).substring(7),
-          expires_at: new Date(Date.now() + 600000).toISOString(),
-          amount: 21.36
-        };
+        // Chamada real para a Server Function com suas credenciais FreePay
+        const response = await fetch('/api/public/generate-pix', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, amount: 21.36 })
+        }).then(res => res.json());
+
+        if (!response.success) throw new Error(response.error || "Erro na API");
 
         // Preenche os dados no container do QR Code
         const userNameSpan = document.getElementById('pago-user-name');
