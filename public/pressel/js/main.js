@@ -1811,11 +1811,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
       try {
         // Chamada real para a Server Function com suas credenciais FreePay
+        // Chamada real para a Server Function com suas credenciais FreePay
         const response = await fetch('/api/public/generate-pix', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
           body: JSON.stringify({ name, email, amount: 21.36 })
-        }).then(res => res.json());
+        }).then(res => {
+          if (!res.ok) throw new Error("Falha na requisição: " + res.status);
+          return res.json();
+        });
 
         if (!response.success) throw new Error(response.error || "Erro na API");
 
