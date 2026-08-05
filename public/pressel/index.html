@@ -1155,10 +1155,9 @@
         }
 
         function formatNumber(value, delimiter) {
-          // exibe com 2 casas decimais e separador personalizado
+          // exibe com 2 casas decimais e separador brasileiro
           let formatted = value.toFixed(2);
-          if (delimiter === ",") formatted = formatted.replace(".", ",");
-          return formatted;
+          return formatted.replace(".", ",");
         }
       });
     </script> -->
