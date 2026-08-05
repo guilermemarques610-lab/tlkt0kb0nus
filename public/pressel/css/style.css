@@ -1091,8 +1091,8 @@ button:focus {
 }
 .pix-icon {
   display: flex;
-  width: 32px;
-  height: 20px;
+  width: 48px;
+  height: 32px;
   overflow: hidden;
   border-radius: 4px;
   box-sizing: border-box;
